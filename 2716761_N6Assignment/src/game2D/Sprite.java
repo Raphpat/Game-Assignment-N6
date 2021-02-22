@@ -1,3 +1,4 @@
+package game2D;
 import java.awt.Image;
 import java.awt.*;
 import java.awt.geom.*;

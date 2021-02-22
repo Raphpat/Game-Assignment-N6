@@ -1,3 +1,4 @@
+package game2D;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
