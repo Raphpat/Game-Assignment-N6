@@ -1,5 +1,3 @@
-package game2D;
-
 /**
 	The Velocity class provides the ability to manipulate and specify a
 	Velocity as a speed and direction. Using this class, you can

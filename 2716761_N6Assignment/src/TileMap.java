@@ -1,5 +1,3 @@
-package game2D;
-
 import javax.swing.ImageIcon;
 import java.awt.Graphics2D;
 import java.awt.Image;
