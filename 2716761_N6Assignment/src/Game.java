@@ -129,10 +129,11 @@ public class Game extends GameCore {
 
 		// When the sprite player is within 100px of the right side of the screen, shift
 		// the offset by one.
-		//&& screenWidth - xo - player.getX() >= 0
 		if (screenWidth - xo - player.getX() < 100 ) {
 			if (xo - 1 < -tmap.getPixelWidth() + screenWidth) {
 				xo = -tmap.getPixelWidth() + screenWidth;
+			} else if(screenWidth - xo - player.getX() >= 0 && xo - 5 < -tmap.getPixelWidth() + screenWidth) {
+				xo -= 5;
 			} else {
 				xo -= 1;
 			}
@@ -140,10 +141,12 @@ public class Game extends GameCore {
 
 		// When the sprite player is within 100px of the left side of the screen, shift
 		// the offset by one.
-		//&& xo + player.getX() >= 0
+		//&& 
 		if (xo + player.getX() < 100 ) {
 			if (xo + 1 >= 0) {
 				xo = 0;
+			} else if( xo + player.getX() >= 0 && xo + 5 > -tmap.getPixelWidth() + screenWidth){
+				xo += 5;
 			} else {
 				xo += 1;
 			}
