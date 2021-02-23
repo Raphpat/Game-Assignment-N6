@@ -21,6 +21,7 @@ public class Sprite {
     // Velocity (pixels per millisecond)
     private float dx;
     private float dy;
+    private float maxV;
 
     // Dimensions of the sprite
     private float height;
@@ -256,6 +257,20 @@ public class Sprite {
 	public void setVelocity(float dx, float dy) {
 		this.dx = dx;
 		this.dy = dy;
+	}
+
+	/**
+	 * @return the maximum velocity of the sprite
+	 */
+	public float getMaxVelocity() {
+		return maxV;
+	}
+
+	/**
+	 * @param maxV the max velocity the sprite can have
+	 */
+	public void setMaxVelocity(float maxV) {
+		this.maxV = maxV;
 	}
 
 	/**

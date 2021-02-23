@@ -81,6 +81,7 @@ public class Game extends GameCore {
 
 		// Initialise the player with an animation
 		player = new Sprite(landing);
+		player.setMaxVelocity(0.2f);
 
 		// Load a single cloud animation
 		Animation ca = new Animation();
@@ -128,7 +129,8 @@ public class Game extends GameCore {
 
 		// When the sprite player is within 100px of the right side of the screen, shift
 		// the offset by one.
-		if (screenWidth - xo - player.getX() < 100 && screenWidth - xo - player.getX() >= 0) {
+		//&& screenWidth - xo - player.getX() >= 0
+		if (screenWidth - xo - player.getX() < 100 ) {
 			if (xo - 1 < -tmap.getPixelWidth() + screenWidth) {
 				xo = -tmap.getPixelWidth() + screenWidth;
 			} else {
@@ -138,7 +140,8 @@ public class Game extends GameCore {
 
 		// When the sprite player is within 100px of the left side of the screen, shift
 		// the offset by one.
-		if (xo + player.getX() < 100 && xo + player.getX() >= 0) {
+		//&& xo + player.getX() >= 0
+		if (xo + player.getX() < 100 ) {
 			if (xo + 1 >= 0) {
 				xo = 0;
 			} else {
@@ -234,18 +237,18 @@ public class Game extends GameCore {
 			stop();
 
 		if (key == KeyEvent.VK_UP)
-			flap = true;
+			if(-player.getVelocityY() < player.getMaxVelocity()) player.setVelocityY(player.getVelocityY()-0.01f);
 
 		if (key == KeyEvent.VK_DOWN) {
-			player.setVelocityY(0.04f);
+			if(player.getVelocityY() < player.getMaxVelocity()) player.setVelocityY(player.getVelocityY()+0.01f);
 		}
 
 		if (key == KeyEvent.VK_LEFT) {
-			player.setVelocityX(-0.04f);
+			if(-player.getVelocityX() < player.getMaxVelocity())player.setVelocityX(player.getVelocityX()-0.01f);
 		}
 
 		if (key == KeyEvent.VK_RIGHT) {
-			player.setVelocityX(0.04f);
+			if(-player.getVelocityY() < player.getMaxVelocity()) player.setVelocityX(player.getVelocityX()+0.01f);
 		}
 
 		if (key == KeyEvent.VK_S) {
