@@ -17,10 +17,12 @@ import java.io.*;
  * character. The dot character always defaults to a blank space // Note that
  * the referenced files should be in the same directory as the // tile map.
  * #b=orangeblock.png #c=greencircle.png #g=glasses.png // The actual tile map
- * is preceded by the #map line #map bbbbbbbbbb b........b b..g.....b bccccccccb
+ * is preceded by the #map line #map 
+ * bbbbbbbbbb 
+ * b........b 
+ * b..g.....b 
+ * bccccccccb
  * bbbbbbbbbb
- * 
- * }
  * 
  * @author David Cairns
  */
