@@ -27,6 +27,10 @@ public class Game extends GameCore
 	// Useful game constants
 	static int screenWidth = 512;
 	static int screenHeight = 384;
+	
+	// Screen offset
+	int xo = 0;
+    int yo = 0;
 
     float 	lift = 0.005f;
     float	gravity = 0.0001f;
@@ -129,8 +133,25 @@ public class Game extends GameCore
 
     	// First work out how much we need to shift the view 
     	// in order to see where the player is.
-        int xo = 0;
-        int yo = 0;
+    	
+    	
+        //When the sprite player is within 100px of the right side of the screen, shift the offset by one.
+    	if(screenWidth - xo - player.getX()< 100 && screenWidth -xo - player.getX()>= 0) {
+    		if(xo - 1 < -tmap.getPixelWidth() + screenWidth) {
+    			xo = -tmap.getPixelWidth() + screenWidth;
+    		} else {
+    			xo -= 1;
+    		}
+    	}
+    	
+    	if(xo + player.getX() < 100 && xo + player.getX()>= 0) {
+    		if(xo + 1 >= 0) {
+    			xo = 0;
+    		} else {
+    			xo += 1;
+    		}
+    	}
+        
 
         // If relative, adjust the offset so that
         // it is relative to the player
@@ -234,11 +255,11 @@ public class Game extends GameCore
     	}
 
     	if (key == KeyEvent.VK_LEFT) {
-    		player.setVelocityX(-0.04f);
+    		player.setVelocityX(-0.1f);
     	}
     	
     	if (key == KeyEvent.VK_RIGHT) {
-    		player.setVelocityX(0.04f);
+    		player.setVelocityX(0.1f);
     	}
     		
     	if (key == KeyEvent.VK_S)
