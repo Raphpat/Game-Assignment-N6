@@ -24,7 +24,7 @@ import game2D.*;
 public class Game extends GameCore {
 	// Useful game constants
 	static int screenWidth = 512;
-	static int screenHeight = 384;
+	static int screenHeight = 17*32;
 
 	// Screen offset
 	int xo = 0;
@@ -136,6 +136,8 @@ public class Game extends GameCore {
 			}
 		}
 
+		// When the sprite player is within 100px of the left side of the screen, shift
+		// the offset by one.
 		if (xo + player.getX() < 100 && xo + player.getX() >= 0) {
 			if (xo + 1 >= 0) {
 				xo = 0;
@@ -180,7 +182,7 @@ public class Game extends GameCore {
 	public void update(long elapsed) {
 
 		// Make adjustments to the speed of the sprite due to gravity
-		//player.setVelocityY(player.getVelocityY() + (gravity * elapsed));
+		// player.setVelocityY(player.getVelocityY() + (gravity * elapsed));
 
 		player.setAnimationSpeed(1.0f);
 
@@ -306,8 +308,8 @@ public class Game extends GameCore {
 		}
 
 		// Top right
-		xtile = (int) ((sx + s.getHeight())/ tileWidth);
-		ytile = (int) (sy/ tileHeight);
+		xtile = (int) ((sx + s.getHeight()) / tileWidth);
+		ytile = (int) (sy / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
 		// If it's not empty space
@@ -317,19 +319,19 @@ public class Game extends GameCore {
 			s.shiftX(-1);
 			s.shiftY(1);
 		}
-		
-		// Bottom right
-				xtile = (int) ((sx + s.getHeight())/ tileWidth);
-				ytile = (int) ((sy + s.getHeight())/ tileHeight);
-				ch = tmap.getTileChar(xtile, ytile);
 
-				// If it's not empty space
-				if (ch != '.') {
-					// Stop the sprite and move him back one pixel
-					s.stop();
-					s.shiftX(-1);
-					s.shiftY(-1);
-				}
+		// Bottom right
+		xtile = (int) ((sx + s.getHeight()) / tileWidth);
+		ytile = (int) ((sy + s.getHeight()) / tileHeight);
+		ch = tmap.getTileChar(xtile, ytile);
+
+		// If it's not empty space
+		if (ch != '.') {
+			// Stop the sprite and move him back one pixel
+			s.stop();
+			s.shiftX(-1);
+			s.shiftY(-1);
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
