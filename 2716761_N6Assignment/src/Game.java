@@ -228,7 +228,19 @@ public class Game extends GameCore
     	if (key == KeyEvent.VK_ESCAPE) stop();
     	
     	if (key == KeyEvent.VK_UP) flap = true;
-    	   	
+    	
+    	if (key == KeyEvent.VK_DOWN) {
+    		player.setVelocityY(0.04f);
+    	}
+
+    	if (key == KeyEvent.VK_LEFT) {
+    		player.setVelocityX(-0.04f);
+    	}
+    	
+    	if (key == KeyEvent.VK_RIGHT) {
+    		player.setVelocityX(0.04f);
+    	}
+    		
     	if (key == KeyEvent.VK_S)
     	{
     		// Example of playing a sound as a thread
