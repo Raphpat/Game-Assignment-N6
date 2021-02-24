@@ -253,6 +253,12 @@ public class Game extends GameCore {
 		if (key == KeyEvent.VK_RIGHT) {
 			if(-player.getVelocityY() < player.getMaxVelocity()) player.setVelocityX(player.getVelocityX()+0.01f);
 		}
+		
+		if (key == KeyEvent.VK_SPACE) {
+			//TODO Add handler to pass mouse position so that the projectile shoots to where the mouse is
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			new Projectile(p.x, p.y);
+		}
 
 		if (key == KeyEvent.VK_S) {
 			// Example of playing a sound as a thread

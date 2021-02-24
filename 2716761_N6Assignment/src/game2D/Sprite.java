@@ -42,6 +42,15 @@ public class Sprite {
     private int yoff=0;
 
     /**
+     * Empty constructor required for the subclass.
+     */
+    public Sprite() {
+    	render = true;
+        scale = 1.0f;
+        rotation = 0.0f;
+    }
+    
+    /**
      *  Creates a new Sprite object with the specified Animation.
      *  
      * @param a The animation to use for the sprite.
