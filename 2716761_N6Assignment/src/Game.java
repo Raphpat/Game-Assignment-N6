@@ -1,8 +1,8 @@
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-
 import java.awt.*;
 
 import game2D.*;
@@ -41,6 +41,7 @@ public class Game extends GameCore {
 
 	Sprite player = null;
 	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
+	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	TileMap tmap = new TileMap(); // Our tile map, note that we load it in init()
 
@@ -169,6 +170,22 @@ public class Game extends GameCore {
 		// Apply offsets to player and draw
 		player.setOffsets(xo, yo);
 		player.draw(g);
+		
+		// Draw projectiles if there are any
+		AffineTransform transform = new AffineTransform();
+		
+		if(!projectiles.isEmpty()) {
+			for(int i = 0; i < projectiles.size(); i++) {
+				Projectile rock = projectiles.get(i);
+				int width = rock.getImage().getWidth(null);
+				int height = rock.getImage().getHeight(null);
+				transform.rotate(Math.toRadians(45), width / 2, height / 2);
+				
+				rock.setOffsets(xo, yo);
+				g.drawImage(rock.getImage(), transform, null);
+				rock.draw(g);;
+			}
+		}
 
 		// Apply offsets to tile map and draw it
 		tmap.draw(g, xo, yo);
@@ -202,6 +219,13 @@ public class Game extends GameCore {
 
 		// Now update the sprites animation and position
 		player.update(elapsed);
+		
+		if(!projectiles.isEmpty()) {
+			for(int i = 0; i < projectiles.size(); i++) {
+				projectiles.get(i).update(elapsed);
+			}
+		}
+		
 
 		// Then check for any collisions that may have occurred
 		handleScreenEdge(player, tmap, elapsed);
@@ -257,7 +281,8 @@ public class Game extends GameCore {
 		if (key == KeyEvent.VK_SPACE) {
 			//TODO Add handler to pass mouse position so that the projectile shoots to where the mouse is
 			Point p = MouseInfo.getPointerInfo().getLocation();
-			new Projectile(p.x, p.y);
+			
+			projectiles.add(new Projectile(p.x - xo, p.y + yo));
 		}
 
 		if (key == KeyEvent.VK_S) {
