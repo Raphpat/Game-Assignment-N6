@@ -151,18 +151,6 @@ public class Game extends GameCore {
 				xo = -((int) player.getX()) + (screenWidth / 2);
 			}
 		}
-//		// When the sprite player is within 100px of the left side of the screen, shift
-//		// the offset by one.
-//		//&& 
-//		if (xo + player.getX() < 100 ) {
-//			if (xo + 1 >= 0) {
-//				xo = 0;
-//			} else if( xo + player.getX() >= 0 && xo + 5 > -tmap.getPixelWidth() + screenWidth){
-//				xo += 5;
-//			} else {
-//				xo += 1;
-//			}
-//		}
 
 		// If relative, adjust the offset so that
 		// it is relative to the player
@@ -228,6 +216,7 @@ public class Game extends GameCore {
 		if (!projectiles.isEmpty()) {
 			for (int i = 0; i < projectiles.size(); i++) {
 				projectiles.get(i).update(elapsed);
+				checkTileCollision(projectiles.get(i), tmap);
 			}
 		}
 
