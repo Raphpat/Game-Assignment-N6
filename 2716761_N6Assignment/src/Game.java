@@ -217,15 +217,12 @@ public class Game extends GameCore {
 			for (int i = 0; i < projectiles.size(); i++) {
 				Projectile rock = projectiles.get(i);
 				rock.update(elapsed);
-				if(checkTileCollision(rock, tmap)) {
+				if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
 					rock.destroy(elapsed);
 				}
-				
-				if(rock.isExploding()) {
-					if(rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
-						System.out.println("removing");
-						projectiles.remove(i);
-					}
+
+				if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
+					projectiles.remove(i);
 				}
 			}
 		}
@@ -344,7 +341,7 @@ public class Game extends GameCore {
 		// We need to consider the other corners of the sprite
 		// The above looked at the top left position, let's look at the bottom left.
 		xtile = (int) (sx / tileWidth);
-		ytile = (int) ((sy + (s.getHeight()*s.getScale())) / tileHeight);
+		ytile = (int) ((sy + (s.getHeight() * s.getScale())) / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
 		// If it's not empty space
@@ -358,7 +355,7 @@ public class Game extends GameCore {
 		}
 
 		// Top right
-		xtile = (int) ((sx + (s.getHeight()*s.getScale())) / tileWidth);
+		xtile = (int) ((sx + (s.getHeight() * s.getScale())) / tileWidth);
 		ytile = (int) (sy / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
@@ -372,8 +369,8 @@ public class Game extends GameCore {
 		}
 
 		// Bottom right
-		xtile = (int) ((sx + (s.getHeight()*s.getScale())) / tileWidth);
-		ytile = (int) ((sy + (s.getHeight()*s.getScale())) / tileHeight);
+		xtile = (int) ((sx + (s.getHeight() * s.getScale())) / tileWidth);
+		ytile = (int) ((sy + (s.getHeight() * s.getScale())) / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
 		// If it's not empty space
@@ -384,7 +381,7 @@ public class Game extends GameCore {
 			s.shiftY(-1);
 			return true;
 		}
-		
+
 		return false;
 	}
 
