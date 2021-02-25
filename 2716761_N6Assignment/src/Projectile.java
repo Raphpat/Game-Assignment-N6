@@ -15,21 +15,25 @@ public class Projectile extends Sprite {
 	/**
 	 * Will construct a rock projectile
 	 * 
+	 * @param x  origin position
+	 * @param y  origin position
+	 * @param tx target position
+	 * @param ty target position
 	 */
-	public Projectile(int x, int y) {
+	public Projectile(float x, float y, int tx, int ty) {
 		super();
-		
+
 		Animation anim = new Animation();
-		
+
 		anim.addFrame(new ImageIcon(projImage).getImage(), 500);
 
 		setAnimation(anim);
-		
-        setScale(0.2f);
-        setRotation(0.1f);
-        setPosition(x, y);
 
-        }
-	
+		setScale(0.5f);
+		setPosition(x, y);
+		setRotation(45);
+		setVelocityX((tx - x) / 1000);
+		setVelocityY((ty - y) / 1000);
+	}
 
 }

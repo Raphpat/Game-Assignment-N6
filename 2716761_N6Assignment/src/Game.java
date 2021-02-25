@@ -171,19 +171,13 @@ public class Game extends GameCore {
 		player.setOffsets(xo, yo);
 		player.draw(g);
 		
-		// Draw projectiles if there are any
-		AffineTransform transform = new AffineTransform();
-		
 		if(!projectiles.isEmpty()) {
 			for(int i = 0; i < projectiles.size(); i++) {
 				Projectile rock = projectiles.get(i);
-				int width = rock.getImage().getWidth(null);
-				int height = rock.getImage().getHeight(null);
-				transform.rotate(Math.toRadians(45), width / 2, height / 2);
 				
+				// Apply offsets to the projectiles and draw
 				rock.setOffsets(xo, yo);
-				g.drawImage(rock.getImage(), transform, null);
-				rock.draw(g);;
+				rock.drawTransformed(g);
 			}
 		}
 
@@ -282,7 +276,7 @@ public class Game extends GameCore {
 			//TODO Add handler to pass mouse position so that the projectile shoots to where the mouse is
 			Point p = MouseInfo.getPointerInfo().getLocation();
 			
-			projectiles.add(new Projectile(p.x - xo, p.y + yo));
+			projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
 		}
 
 		if (key == KeyEvent.VK_S) {
