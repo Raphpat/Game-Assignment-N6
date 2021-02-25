@@ -215,8 +215,18 @@ public class Game extends GameCore {
 
 		if (!projectiles.isEmpty()) {
 			for (int i = 0; i < projectiles.size(); i++) {
-				projectiles.get(i).update(elapsed);
-				checkTileCollision(projectiles.get(i), tmap);
+				Projectile rock = projectiles.get(i);
+				rock.update(elapsed);
+				if(checkTileCollision(rock, tmap)) {
+					rock.destroy(elapsed);
+				}
+				
+				if(rock.isExploding()) {
+					if(rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
+						System.out.println("removing");
+						projectiles.remove(i);
+					}
+				}
 			}
 		}
 
@@ -300,9 +310,10 @@ public class Game extends GameCore {
 	 * 
 	 * @param s    The Sprite to check collisions for
 	 * @param tmap The tile map to check
+	 * @return true if there was a tile collision
 	 */
 
-	public void checkTileCollision(Sprite s, TileMap tmap) {
+	public boolean checkTileCollision(Sprite s, TileMap tmap) {
 		// Take a note of a sprite's current position
 		float sx = s.getX();
 		float sy = s.getY();
@@ -326,12 +337,14 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(1);
+			// TODO Improve object destruction
+			return true;
 		}
 
 		// We need to consider the other corners of the sprite
 		// The above looked at the top left position, let's look at the bottom left.
 		xtile = (int) (sx / tileWidth);
-		ytile = (int) ((sy + s.getHeight()) / tileHeight);
+		ytile = (int) ((sy + (s.getHeight()*s.getScale())) / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
 		// If it's not empty space
@@ -340,10 +353,12 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(-1);
+			// TODO Improve object destruction
+			return true;
 		}
 
 		// Top right
-		xtile = (int) ((sx + s.getHeight()) / tileWidth);
+		xtile = (int) ((sx + (s.getHeight()*s.getScale())) / tileWidth);
 		ytile = (int) (sy / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
@@ -353,11 +368,12 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(1);
+			return true;
 		}
 
 		// Bottom right
-		xtile = (int) ((sx + s.getHeight()) / tileWidth);
-		ytile = (int) ((sy + s.getHeight()) / tileHeight);
+		xtile = (int) ((sx + (s.getHeight()*s.getScale())) / tileWidth);
+		ytile = (int) ((sy + (s.getHeight()*s.getScale())) / tileHeight);
 		ch = tmap.getTileChar(xtile, ytile);
 
 		// If it's not empty space
@@ -366,7 +382,10 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(-1);
+			return true;
 		}
+		
+		return false;
 	}
 
 	public void keyReleased(KeyEvent e) {
