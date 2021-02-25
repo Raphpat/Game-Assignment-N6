@@ -24,7 +24,7 @@ import game2D.*;
 public class Game extends GameCore {
 	// Useful game constants
 	static int screenWidth = 512;
-	static int screenHeight = 17*32;
+	static int screenHeight = 17 * 32;
 
 	// Screen offset
 	int xo = 0;
@@ -128,30 +128,41 @@ public class Game extends GameCore {
 		// First work out how much we need to shift the view
 		// in order to see where the player is.
 
-		// When the sprite player is within 100px of the right side of the screen, shift
-		// the offset by one.
-		if (screenWidth - xo - player.getX() < 100 ) {
-			if (xo - 1 < -tmap.getPixelWidth() + screenWidth) {
+		// Center the view on the player once it reaches the middle of the screen
+		// To move the view to the right
+		if (player.getX() + xo >= screenWidth / 2) {
+			if (-xo >= tmap.getPixelWidth() - screenWidth) {
+				// If the right edge of the map is reached, do not move further
 				xo = -tmap.getPixelWidth() + screenWidth;
-			} else if(screenWidth - xo - player.getX() >= 0 && xo - 5 < -tmap.getPixelWidth() + screenWidth) {
-				xo -= 5;
 			} else {
-				xo -= 1;
+				// Center on player
+				xo = -((int) player.getX()) + (screenWidth / 2);
 			}
 		}
 
-		// When the sprite player is within 100px of the left side of the screen, shift
-		// the offset by one.
-		//&& 
-		if (xo + player.getX() < 100 ) {
-			if (xo + 1 >= 0) {
+		// Center the view on the player once it reaches the middle of the screen
+		// To move the view to the left
+		if (player.getX() + xo <= screenWidth / 2) {
+			if (xo >= 0) {
+				// If the left edge of the map is reached, do not move further
 				xo = 0;
-			} else if( xo + player.getX() >= 0 && xo + 5 > -tmap.getPixelWidth() + screenWidth){
-				xo += 5;
 			} else {
-				xo += 1;
+				// Center on player
+				xo = -((int) player.getX()) + (screenWidth / 2);
 			}
 		}
+//		// When the sprite player is within 100px of the left side of the screen, shift
+//		// the offset by one.
+//		//&& 
+//		if (xo + player.getX() < 100 ) {
+//			if (xo + 1 >= 0) {
+//				xo = 0;
+//			} else if( xo + player.getX() >= 0 && xo + 5 > -tmap.getPixelWidth() + screenWidth){
+//				xo += 5;
+//			} else {
+//				xo += 1;
+//			}
+//		}
 
 		// If relative, adjust the offset so that
 		// it is relative to the player
@@ -170,11 +181,11 @@ public class Game extends GameCore {
 		// Apply offsets to player and draw
 		player.setOffsets(xo, yo);
 		player.draw(g);
-		
-		if(!projectiles.isEmpty()) {
-			for(int i = 0; i < projectiles.size(); i++) {
+
+		if (!projectiles.isEmpty()) {
+			for (int i = 0; i < projectiles.size(); i++) {
 				Projectile rock = projectiles.get(i);
-				
+
 				// Apply offsets to the projectiles and draw
 				rock.setOffsets(xo, yo);
 				rock.drawTransformed(g);
@@ -213,13 +224,12 @@ public class Game extends GameCore {
 
 		// Now update the sprites animation and position
 		player.update(elapsed);
-		
-		if(!projectiles.isEmpty()) {
-			for(int i = 0; i < projectiles.size(); i++) {
+
+		if (!projectiles.isEmpty()) {
+			for (int i = 0; i < projectiles.size(); i++) {
 				projectiles.get(i).update(elapsed);
 			}
 		}
-		
 
 		// Then check for any collisions that may have occurred
 		handleScreenEdge(player, tmap, elapsed);
@@ -258,24 +268,29 @@ public class Game extends GameCore {
 			stop();
 
 		if (key == KeyEvent.VK_UP)
-			if(-player.getVelocityY() < player.getMaxVelocity()) player.setVelocityY(player.getVelocityY()-0.01f);
+			if (-player.getVelocityY() < player.getMaxVelocity())
+				player.setVelocityY(player.getVelocityY() - 0.01f);
 
 		if (key == KeyEvent.VK_DOWN) {
-			if(player.getVelocityY() < player.getMaxVelocity()) player.setVelocityY(player.getVelocityY()+0.01f);
+			if (player.getVelocityY() < player.getMaxVelocity())
+				player.setVelocityY(player.getVelocityY() + 0.01f);
 		}
 
 		if (key == KeyEvent.VK_LEFT) {
-			if(-player.getVelocityX() < player.getMaxVelocity())player.setVelocityX(player.getVelocityX()-0.01f);
+			if (-player.getVelocityX() < player.getMaxVelocity())
+				player.setVelocityX(player.getVelocityX() - 0.01f);
 		}
 
 		if (key == KeyEvent.VK_RIGHT) {
-			if(-player.getVelocityY() < player.getMaxVelocity()) player.setVelocityX(player.getVelocityX()+0.01f);
+			if (-player.getVelocityY() < player.getMaxVelocity())
+				player.setVelocityX(player.getVelocityX() + 0.01f);
 		}
-		
+
 		if (key == KeyEvent.VK_SPACE) {
-			//TODO Add handler to pass mouse position so that the projectile shoots to where the mouse is
+			// TODO Add handler to pass mouse position so that the projectile shoots to
+			// where the mouse is
 			Point p = MouseInfo.getPointerInfo().getLocation();
-			
+
 			projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
 		}
 
