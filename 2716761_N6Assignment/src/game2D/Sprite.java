@@ -359,7 +359,7 @@ public class Sprite {
     	if (!render) return;
 
 		Image img = getImage();
-    	g.drawRect((int)x,(int)y,img.getWidth(null),img.getHeight(null));
+    	g.drawRect((int)x + xoff,(int)y + yoff,(int)(img.getWidth(null)*scale),(int)(img.getHeight(null)*scale));
     }
     
     /**
@@ -372,7 +372,7 @@ public class Sprite {
 
 		Image img = getImage();
 		
-    	g.drawArc((int)x,(int)y,img.getWidth(null),img.getHeight(null),0, 360);
+    	g.drawArc((int)x+ xoff ,(int)y + yoff,(int)(img.getWidth(null)*scale),(int)(img.getHeight(null)*scale) ,0, 360);
     }
     
 	/**
@@ -387,7 +387,7 @@ public class Sprite {
     	if (!render) return;
 
 		AffineTransform transform = new AffineTransform();
-		transform.translate(Math.round(x)+xoff,Math.round(y)+yoff);
+		transform.translate(Math.round(x)+ xoff,Math.round(y)+ yoff);
 		transform.scale(scale,scale);
 		transform.rotate(rotation,getImage().getWidth(null)/2,getImage().getHeight(null)/2);
 		// Apply transform to the image and draw it
