@@ -86,11 +86,11 @@ public class Game extends GameCore {
 		// Initialise the player with an animation
 		player = new Sprite(landing);
 		player.setMaxVelocity(0.2f);
-		
+
 		// Temporary enemy stuff
 		rocky = new Animation();
 		rocky.addFrame(loadImage("images/rock.png"), 100);
-		
+
 		enemy = new Sprite(rocky);
 
 		// Load a single cloud animation
@@ -119,7 +119,7 @@ public class Game extends GameCore {
 	 */
 	public void initialiseGame() {
 		total = 0;
-		
+
 		debug = false;
 
 		player.setX(64);
@@ -127,9 +127,10 @@ public class Game extends GameCore {
 		player.setVelocityX(0);
 		player.setVelocityY(0);
 		player.show();
+
 		
-		enemy.setX(200);
-		enemy.setX(200);
+		enemy.setX(500);
+		enemy.setY(200);
 		enemy.setVelocityX(0);
 		enemy.setVelocityY(0);
 		enemy.show();
@@ -189,6 +190,11 @@ public class Game extends GameCore {
 		player.setOffsets(xo, yo);
 		player.draw(g);
 
+		// Draw the enemy
+		enemy.setOffsets(xo, yo);
+		enemy.draw(g);
+
+		
 		if (!projectiles.isEmpty()) {
 			for (int i = 0; i < projectiles.size(); i++) {
 				Projectile rock = projectiles.get(i);
@@ -199,20 +205,16 @@ public class Game extends GameCore {
 			}
 		}
 		
-		// Draw the enemy
-		enemy.setOffsets(xo, yo);
-		enemy.draw(g);
-		
 		// If the debugging is on, then draw the bounding boxes and circles
-		if(debug) {
+		if (debug) {
 			g.setColor(Color.BLACK);
 			player.drawBoundingBox(g);
 			player.drawBoundingCircle(g);
-			
+
 			enemy.drawBoundingBox(g);
 			enemy.drawBoundingCircle(g);
-			
-			for(Projectile proj:projectiles) {
+
+			for (Projectile proj : projectiles) {
 				proj.drawBoundingBox(g);
 				proj.drawBoundingCircle(g);
 			}
@@ -267,7 +269,25 @@ public class Game extends GameCore {
 		}
 
 		// Then check for any collisions that may have occurred
-
+		if(boundingCircleCollision(player, enemy)) {
+			player.stop();
+		}
+		
+		// Check for hits from projectiles onto the enemy sprite
+		for(Projectile proj : projectiles) {
+			if(!proj.isExploding() &&  boundingCircleCollision(proj, enemy)) {
+				// Move the projectile into the sprite a bit more before stopping it
+				proj.shiftX(proj.getVelocityX() * 100);
+				proj.shiftY(proj.getVelocityY() * 100);
+				proj.stop();
+				
+				proj.destroy(elapsed);
+			}
+			if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
+				projectiles.remove(proj);
+			}
+		}
+		
 		checkTileCollision(player, tmap);
 	}
 
@@ -306,7 +326,7 @@ public class Game extends GameCore {
 
 			projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
 		}
-		
+
 		if (key == KeyEvent.VK_COMMA) {
 			debug = !debug;
 			System.out.println("Debug is now " + debug);
@@ -321,6 +341,7 @@ public class Game extends GameCore {
 
 	/**
 	 * Checks bounding box for collisions
+	 * 
 	 * @param s1 The first sprite to check for a collision
 	 * @param s2 The second sprite to check for a collision
 	 * @return true if there is a collision between the two sprites' bounding box
@@ -331,16 +352,18 @@ public class Game extends GameCore {
 				&& ((s1.getY() + s1.getImage().getHeight(null) * s1.getScale() > s2.getY())
 						&& (s1.getY() < s2.getY() + s2.getImage().getHeight(null) * s2.getScale())));
 	}
-	
+
 	/**
 	 * Checks bounding circle for collisions
+	 * 
 	 * @param s1 The first sprite to check for a collision
 	 * @param s2 The second sprite to check for a collision
 	 * @return true if there is a collision between the two sprites' bounding circle
 	 */
 	public boolean boundingCircleCollision(Sprite s1, Sprite s2) {
-		return Math.sqrt(Math.pow((s2.getX() - s1.getX()), 2) + Math.pow((s2.getY() - s1.getY()), 2)) <= (s1.getWidth() * s1.getScale())
-				/ 2 + (s2.getWidth() * s2.getScale()) / 2;
+		return Math.sqrt(Math.pow((s2.getX() - s1.getX()), 2)
+				+ Math.pow((s2.getY() - s1.getY()), 2)) <= (s1.getWidth() * s1.getScale()) / 2
+						+ (s2.getWidth() * s2.getScale()) / 2;
 	}
 
 	/**
