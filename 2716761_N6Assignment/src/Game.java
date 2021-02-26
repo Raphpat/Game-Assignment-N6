@@ -116,6 +116,8 @@ public class Game extends GameCore {
 		player.setVelocityX(0);
 		player.setVelocityY(0);
 		player.show();
+
+		projectiles.clear();
 	}
 
 	/**
@@ -228,28 +230,8 @@ public class Game extends GameCore {
 		}
 
 		// Then check for any collisions that may have occurred
-		handleScreenEdge(player, tmap, elapsed);
+
 		checkTileCollision(player, tmap);
-	}
-
-	/**
-	 * Checks and handles collisions with the edge of the screen
-	 * 
-	 * @param s       The Sprite to check collisions for
-	 * @param tmap    The tile map to check
-	 * @param elapsed How much time has gone by since the last call
-	 */
-	public void handleScreenEdge(Sprite s, TileMap tmap, long elapsed) {
-		// This method just checks if the sprite has gone off the bottom screen.
-		// Ideally you should use tile collision instead of this approach
-
-		if (s.getY() + s.getHeight() > tmap.getPixelHeight()) {
-			// Put the player back on the map 1 pixel above the bottom
-			s.setY(tmap.getPixelHeight() - s.getHeight() - 1);
-
-			// and make them bounce
-			s.setVelocityY(-s.getVelocityY());
-		}
 	}
 
 	/**
@@ -283,8 +265,6 @@ public class Game extends GameCore {
 		}
 
 		if (key == KeyEvent.VK_SPACE) {
-			// TODO Add handler to pass mouse position so that the projectile shoots to
-			// where the mouse is
 			Point p = MouseInfo.getPointerInfo().getLocation();
 
 			projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
@@ -334,7 +314,6 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(1);
-			// TODO Improve object destruction
 			return true;
 		}
 
@@ -350,7 +329,6 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(-1);
-			// TODO Improve object destruction
 			return true;
 		}
 
