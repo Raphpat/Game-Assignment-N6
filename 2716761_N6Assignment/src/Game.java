@@ -36,6 +36,8 @@ public class Game extends GameCore {
 	// Game state flags
 	boolean flap = false;
 	boolean debug = false;
+	String level = "level 1";
+	Color colour = Color.black;
 
 	// Game resources
 	Animation landing;
@@ -69,16 +71,7 @@ public class Game extends GameCore {
 	 * register event handlers
 	 */
 	public void init() {
-		Sprite s; // Temporary reference to a sprite
-
-		// Load the tile map and print it out so we can check it is valid
-		tmap.loadMap("maps", "map.txt");
-
-		setSize(tmap.getPixelWidth() / 4, tmap.getPixelHeight());
-		setVisible(true);
-
-		// Create a set of background sprites that we can
-		// rearrange to give the illusion of motion
+//		Sprite s; // Temporary reference to a sprite
 
 		landing = new Animation();
 		landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
@@ -93,24 +86,23 @@ public class Game extends GameCore {
 
 		enemy = new Sprite(rocky);
 
+		// Cloud animations on hold for now
 		// Load a single cloud animation
-		Animation ca = new Animation();
-		ca.addFrame(loadImage("images/cloud.png"), 1000);
+//		Animation ca = new Animation();
+//		ca.addFrame(loadImage("images/cloud.png"), 1000);
 
 		// Create 3 clouds at random positions off the screen
 		// to the right
-		for (int c = 0; c < 3; c++) {
-			s = new Sprite(ca);
-			s.setX(screenWidth + (int) (Math.random() * 200.0f));
-			s.setY(30 + (int) (Math.random() * 150.0f));
-			s.setVelocityX(-0.02f);
-			s.show();
-			clouds.add(s);
-		}
+//		for (int c = 0; c < 3; c++) {
+//			s = new Sprite(ca);
+//			s.setX(screenWidth + (int) (Math.random() * 200.0f));
+//			s.setY(30 + (int) (Math.random() * 150.0f));
+//			s.setVelocityX(-0.02f);
+//			s.show();
+//			clouds.add(s);
+//		}
 
 		initialiseGame();
-
-		System.out.println(tmap);
 	}
 
 	/**
@@ -122,32 +114,42 @@ public class Game extends GameCore {
 
 		debug = false;
 
-		player.setX(64);
-		player.setY(200);
-		player.setVelocityX(0);
-		player.setVelocityY(0);
-		player.show();
+		if (level.equals("level 1")) {
+			tmap.loadMap("maps", "level1.txt");
 
-		
-		enemy.setX(500);
-		enemy.setY(200);
-		enemy.setVelocityX(0);
-		enemy.setVelocityY(0);
-		enemy.show();
+			setSize(tmap.getPixelWidth() / 4, screenHeight);
+			setVisible(true);
 
-		projectiles.clear();
+			player.setX(64);
+			player.setY(200);
+			player.setVelocityX(0);
+			player.setVelocityY(0);
+			player.show();
+
+			enemy.setX(500);
+			enemy.setY(200);
+			enemy.setVelocityX(0);
+			enemy.setVelocityY(0);
+			enemy.show();
+
+			projectiles.clear();
+		} else if (level.equals("level 2")) {
+
+		} else if (level.equals("menu")) {
+			setSize(screenWidth, screenHeight);
+
+			player.setX(64);
+			player.setY(200);
+			player.setVelocityX(0);
+			player.setVelocityY(0);
+			player.show();
+		}
 	}
 
 	/**
 	 * Draw the current state of the game
 	 */
 	public void draw(Graphics2D g) {
-		// Be careful about the order in which you draw objects - you
-		// should draw the background first, then work your way 'forward'
-
-		// First work out how much we need to shift the view
-		// in order to see where the player is.
-
 		// Center the view on the player once it reaches the middle of the screen
 		// To move the view to the right
 		if (player.getX() + xo >= screenWidth / 2) {
@@ -172,61 +174,74 @@ public class Game extends GameCore {
 			}
 		}
 
-		// If relative, adjust the offset so that
-		// it is relative to the player
-
-		// ...?
-
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
 		// Apply offsets to sprites then draw them
-		for (Sprite s : clouds) {
-			s.setOffsets(xo, yo);
-			s.draw(g);
-		}
+//		for (Sprite s : clouds) {
+//			s.setOffsets(xo, yo);
+//			s.draw(g);
+//		}
 
-		// Apply offsets to player and draw
-		player.setOffsets(xo, yo);
-		player.draw(g);
+		/**
+		 * Draw differently based on the level
+		 */
+		if (level.equals("level 1")) {
+			// Apply offsets to player and draw
+			player.setOffsets(xo, yo);
+			player.draw(g);
 
-		// Draw the enemy
-		enemy.setOffsets(xo, yo);
-		enemy.draw(g);
+			// Draw the enemy
+			enemy.setOffsets(xo, yo);
+			enemy.draw(g);
 
-		
-		if (!projectiles.isEmpty()) {
-			for (int i = 0; i < projectiles.size(); i++) {
-				Projectile rock = projectiles.get(i);
+			if (!projectiles.isEmpty()) {
+				for (int i = 0; i < projectiles.size(); i++) {
+					Projectile rock = projectiles.get(i);
 
-				// Apply offsets to the projectiles and draw
-				rock.setOffsets(xo, yo);
-				rock.drawTransformed(g);
+					// Apply offsets to the projectiles and draw
+					rock.setOffsets(xo, yo);
+					rock.drawTransformed(g);
+				}
 			}
-		}
-		
-		// If the debugging is on, then draw the bounding boxes and circles
-		if (debug) {
-			g.setColor(Color.BLACK);
-			player.drawBoundingBox(g);
-			player.drawBoundingCircle(g);
 
-			enemy.drawBoundingBox(g);
-			enemy.drawBoundingCircle(g);
+			// If the debugging is on, then draw the bounding boxes and circles
+			if (debug) {
+				g.setColor(Color.BLACK);
+				player.drawBoundingBox(g);
+				player.drawBoundingCircle(g);
 
-			for (Projectile proj : projectiles) {
-				proj.drawBoundingBox(g);
-				proj.drawBoundingCircle(g);
+				enemy.drawBoundingBox(g);
+				enemy.drawBoundingCircle(g);
+
+				for (Projectile proj : projectiles) {
+					proj.drawBoundingBox(g);
+					proj.drawBoundingCircle(g);
+				}
 			}
+
+			// Apply offsets to tile map and draw it
+			tmap.draw(g, xo, yo);
+
+			// Show score and status information
+			String msg = String.format("Score: %d", total / 100);
+			g.setColor(Color.darkGray);
+			g.drawString(msg, getWidth() - 80, 50);
+		} else if (level.equals("level 2")) {
+			// Do things for level 2 ? Or unify with level 1?
+		} else if (level.equals("menu")) {
+			player.setScale(2f);
+			player.drawTransformed(g);
+
+			g.setColor(colour);
+			g.fillRect(screenWidth - 200, 100, 150, 50);
+			g.fillRect(screenWidth - 200, 200, 150, 50);
+
+			g.setColor(Color.white);
+			g.setFont(new Font("Monospaced", 2, 30));
+			g.drawString("Level 1", screenWidth - 190, 133);
+			g.drawString("Level 2", screenWidth - 190, 233);
 		}
-
-		// Apply offsets to tile map and draw it
-		tmap.draw(g, xo, yo);
-
-		// Show score and status information
-		String msg = String.format("Score: %d", total / 100);
-		g.setColor(Color.darkGray);
-		g.drawString(msg, getWidth() - 80, 50);
 	}
 
 	/**
@@ -247,8 +262,9 @@ public class Game extends GameCore {
 			player.setVelocityY(-0.04f);
 		}
 
-		for (Sprite s : clouds)
-			s.update(elapsed);
+		// Clouds
+//		for (Sprite s : clouds)
+//			s.update(elapsed);
 
 		// Now update the sprites animation and position
 		player.update(elapsed);
@@ -269,25 +285,25 @@ public class Game extends GameCore {
 		}
 
 		// Then check for any collisions that may have occurred
-		if(boundingCircleCollision(player, enemy)) {
+		if (boundingCircleCollision(player, enemy)) {
 			player.stop();
 		}
-		
+
 		// Check for hits from projectiles onto the enemy sprite
-		for(Projectile proj : projectiles) {
-			if(!proj.isExploding() &&  boundingCircleCollision(proj, enemy)) {
+		for (Projectile proj : projectiles) {
+			if (!proj.isExploding() && boundingCircleCollision(proj, enemy)) {
 				// Move the projectile into the sprite a bit more before stopping it
 				proj.shiftX(proj.getVelocityX() * 100);
 				proj.shiftY(proj.getVelocityY() * 100);
 				proj.stop();
-				
+
 				proj.destroy(elapsed);
 			}
 			if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
 				projectiles.remove(proj);
 			}
 		}
-		
+
 		checkTileCollision(player, tmap);
 	}
 
@@ -299,43 +315,51 @@ public class Game extends GameCore {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 
-		if (key == KeyEvent.VK_ESCAPE)
-			stop();
+		if (level.equals("menu")) {
+			if (key == KeyEvent.VK_ESCAPE)
+				stop();
+		} else {
+			if (key == KeyEvent.VK_ESCAPE) {
+				level = "menu";
+				initialiseGame();
+			}
+			if (key == KeyEvent.VK_UP)
+				// Compare negative velocity Y because when going up velocity Y is negative
+				if (-player.getVelocityY() < player.getMaxVelocity())
+					player.setVelocityY(player.getVelocityY() - 0.01f);
 
-		if (key == KeyEvent.VK_UP)
-			if (-player.getVelocityY() < player.getMaxVelocity())
-				player.setVelocityY(player.getVelocityY() - 0.01f);
+			if (key == KeyEvent.VK_DOWN) {
+				if (player.getVelocityY() < player.getMaxVelocity())
+					player.setVelocityY(player.getVelocityY() + 0.01f);
+			}
 
-		if (key == KeyEvent.VK_DOWN) {
-			if (player.getVelocityY() < player.getMaxVelocity())
-				player.setVelocityY(player.getVelocityY() + 0.01f);
-		}
+			if (key == KeyEvent.VK_LEFT) {
+				// Compare negative velocity X because when going left velocity X is negative
+				if (-player.getVelocityX() < player.getMaxVelocity())
+					player.setVelocityX(player.getVelocityX() - 0.01f);
+			}
 
-		if (key == KeyEvent.VK_LEFT) {
-			if (-player.getVelocityX() < player.getMaxVelocity())
-				player.setVelocityX(player.getVelocityX() - 0.01f);
-		}
+			if (key == KeyEvent.VK_RIGHT) {
+				if (-player.getVelocityY() < player.getMaxVelocity())
+					player.setVelocityX(player.getVelocityX() + 0.01f);
+			}
 
-		if (key == KeyEvent.VK_RIGHT) {
-			if (-player.getVelocityY() < player.getMaxVelocity())
-				player.setVelocityX(player.getVelocityX() + 0.01f);
-		}
+			if (key == KeyEvent.VK_SPACE) {
+				Point p = MouseInfo.getPointerInfo().getLocation();
 
-		if (key == KeyEvent.VK_SPACE) {
-			Point p = MouseInfo.getPointerInfo().getLocation();
+				projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
+			}
 
-			projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y + yo));
-		}
+			if (key == KeyEvent.VK_COMMA) {
+				debug = !debug;
+				System.out.println("Debug is now " + debug);
+			}
 
-		if (key == KeyEvent.VK_COMMA) {
-			debug = !debug;
-			System.out.println("Debug is now " + debug);
-		}
-
-		if (key == KeyEvent.VK_S) {
-			// Example of playing a sound as a thread
-			Sound s = new Sound("sounds/caw.wav");
-			s.start();
+			if (key == KeyEvent.VK_S) {
+				// Example of playing a sound as a thread
+				Sound s = new Sound("sounds/caw.wav");
+				s.start();
+			}
 		}
 	}
 
@@ -455,9 +479,9 @@ public class Game extends GameCore {
 		// Switch statement instead of lots of ifs...
 		// Need to use break to prevent fall through.
 		switch (key) {
-		case KeyEvent.VK_ESCAPE:
-			stop();
-			break;
+//		case KeyEvent.VK_ESCAPE:
+//			stop();
+//			break;
 		case KeyEvent.VK_UP:
 			flap = false;
 			break;
