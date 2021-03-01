@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.awt.*;
@@ -36,8 +37,9 @@ public class Game extends GameCore {
 	// Game state flags
 	boolean flap = false;
 	boolean debug = false;
-	String level = "level 1";
-	Color colour = Color.black;
+	String level = "menu";
+	Color colour1 = Color.black;
+	Color colour2 = Color.black;
 
 	// Game resources
 	Animation landing;
@@ -48,7 +50,7 @@ public class Game extends GameCore {
 	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
-	TileMap tmap = new TileMap(); // Our tile map, note that we load it in init()
+	TileMap tmap = new TileMap(); // Our tile map, note that we load it in initialiseGame()
 
 	long total; // The score will be the total time elapsed since a crash
 
@@ -233,8 +235,9 @@ public class Game extends GameCore {
 			player.setScale(2f);
 			player.drawTransformed(g);
 
-			g.setColor(colour);
+			g.setColor(colour1);
 			g.fillRect(screenWidth - 200, 100, 150, 50);
+			g.setColor(colour2);
 			g.fillRect(screenWidth - 200, 200, 150, 50);
 
 			g.setColor(Color.white);
@@ -251,60 +254,54 @@ public class Game extends GameCore {
 	 *                elapsed
 	 */
 	public void update(long elapsed) {
+		if (level.equals("menu")) {
+			player.update(elapsed);
+		} else {
 
-		// Make adjustments to the speed of the sprite due to gravity
-		// player.setVelocityY(player.getVelocityY() + (gravity * elapsed));
-
-		player.setAnimationSpeed(1.0f);
-
-		if (flap) {
-			player.setAnimationSpeed(1.8f);
-			player.setVelocityY(-0.04f);
-		}
-
-		// Clouds
+			// Clouds
 //		for (Sprite s : clouds)
 //			s.update(elapsed);
 
-		// Now update the sprites animation and position
-		player.update(elapsed);
-		enemy.update(elapsed);
+			// Now update the sprites animation and position
+			player.update(elapsed);
+			enemy.update(elapsed);
 
-		if (!projectiles.isEmpty()) {
-			for (int i = 0; i < projectiles.size(); i++) {
-				Projectile rock = projectiles.get(i);
-				rock.update(elapsed);
-				if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
-					rock.destroy(elapsed);
+			if (!projectiles.isEmpty()) {
+				for (int i = 0; i < projectiles.size(); i++) {
+					Projectile rock = projectiles.get(i);
+					rock.update(elapsed);
+					if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
+						rock.destroy(elapsed);
+					}
+
+					if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
+						projectiles.remove(i);
+					}
 				}
+			}
 
-				if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
-					projectiles.remove(i);
+			// Then check for any collisions that may have occurred
+			if (boundingCircleCollision(player, enemy)) {
+				player.stop();
+			}
+
+			// Check for hits from projectiles onto the enemy sprite
+			for (Projectile proj : projectiles) {
+				if (!proj.isExploding() && boundingCircleCollision(proj, enemy)) {
+					// Move the projectile into the sprite a bit more before stopping it
+					proj.shiftX(proj.getVelocityX() * 100);
+					proj.shiftY(proj.getVelocityY() * 100);
+					proj.stop();
+
+					proj.destroy(elapsed);
+				}
+				if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
+					projectiles.remove(proj);
 				}
 			}
+
+			checkTileCollision(player, tmap);
 		}
-
-		// Then check for any collisions that may have occurred
-		if (boundingCircleCollision(player, enemy)) {
-			player.stop();
-		}
-
-		// Check for hits from projectiles onto the enemy sprite
-		for (Projectile proj : projectiles) {
-			if (!proj.isExploding() && boundingCircleCollision(proj, enemy)) {
-				// Move the projectile into the sprite a bit more before stopping it
-				proj.shiftX(proj.getVelocityX() * 100);
-				proj.shiftY(proj.getVelocityY() * 100);
-				proj.stop();
-
-				proj.destroy(elapsed);
-			}
-			if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
-				projectiles.remove(proj);
-			}
-		}
-
-		checkTileCollision(player, tmap);
 	}
 
 	/**
@@ -398,7 +395,6 @@ public class Game extends GameCore {
 	 * @param tmap The tile map to check
 	 * @return true if there was a tile collision
 	 */
-
 	public boolean checkTileCollision(Sprite s, TileMap tmap) {
 		// Take a note of a sprite's current position
 		float sx = s.getX();
@@ -476,17 +472,72 @@ public class Game extends GameCore {
 
 		int key = e.getKeyCode();
 
-		// Switch statement instead of lots of ifs...
-		// Need to use break to prevent fall through.
-		switch (key) {
-//		case KeyEvent.VK_ESCAPE:
-//			stop();
-//			break;
-		case KeyEvent.VK_UP:
-			flap = false;
-			break;
-		default:
-			break;
+		e.consume();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (level.equals("menu") && e.getX() > screenWidth - 200 && e.getX() < screenWidth - 50) {
+			if (e.getY() > 100 && e.getY() < 150) {
+				// Change the level and start the game
+				level = "level 1";
+				initialiseGame();
+				// Restore the colour of the button
+				colour1 = Color.black;
+				// Restore the default size of the player
+				player.setScale(1f);
+			} 
+			if (e.getY() > 200 && e.getY() < 250) {
+				// Change the level and start the game
+				level = "level 2";
+				initialiseGame();
+				// Restore the colour of the button
+				colour2 = Color.black;
+				// Restore the default size of the player
+				player.setScale(1f);
+			}
 		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		if (level.equals("menu") && e.getX() > screenWidth - 200 && e.getX() < screenWidth - 50) {
+			// If the mouse hovers over the level buttons, change their colours to grey
+			if (e.getY() > 100 && e.getY() < 150) {
+				colour1 = Color.gray;
+			} else {
+				colour1 = Color.black;
+			}
+			if (e.getY() > 200 && e.getY() < 250) {
+				colour2 = Color.gray;
+			} else {
+				colour2 = Color.black;
+			}
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
 	}
 }
