@@ -76,8 +76,8 @@ public class Game extends GameCore {
 //		Sprite s; // Temporary reference to a sprite
 
 		landing = new Animation();
-		landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-
+		//landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
+		landing.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
 		// Initialise the player with an animation
 		player = new Sprite(landing);
 		player.setMaxVelocity(0.2f);
