@@ -25,7 +25,7 @@ import game2D.*;
 public class Game extends GameCore {
 	// Useful game constants
 	static int screenWidth = 512;
-	static int screenHeight = 17 * 32;
+	static int screenHeight = 16 * 32;
 
 	// Screen offset
 	int xo = 0;
@@ -42,10 +42,12 @@ public class Game extends GameCore {
 	Color colour2 = Color.black;
 
 	// Game resources
-	Animation landing;
+	Animation tankBody;
+	Animation tankTurret;
 	Animation rocky;
 
 	Sprite player = null;
+	Sprite playerTurret = null;
 	Sprite enemy = null;
 	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -75,11 +77,14 @@ public class Game extends GameCore {
 	public void init() {
 //		Sprite s; // Temporary reference to a sprite
 
-		landing = new Animation();
-		//landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-		landing.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
+		tankBody = new Animation();
+		tankTurret = new Animation();
+		// landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
+		tankBody.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
+		tankTurret.addFrame(loadImage("images/Tank Green/Tank Green Turret Idle.png"), 100);
 		// Initialise the player with an animation
-		player = new Sprite(landing);
+		player = new Sprite(tankBody);
+		playerTurret = new Sprite(tankTurret);
 		player.setMaxVelocity(0.2f);
 
 		// Temporary enemy stuff
@@ -116,10 +121,11 @@ public class Game extends GameCore {
 
 		debug = false;
 
+		setSize(screenWidth, screenHeight);
+
 		if (level.equals("level 1")) {
 			tmap.loadMap("maps", "level1.txt");
 
-			setSize(tmap.getPixelWidth() / 4, screenHeight);
 			setVisible(true);
 
 			player.setX(64);
@@ -127,6 +133,9 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+			playerTurret.setX(64);
+			playerTurret.setY(200);
+			playerTurret.show();
 
 			enemy.setX(500);
 			enemy.setY(200);
@@ -138,13 +147,16 @@ public class Game extends GameCore {
 		} else if (level.equals("level 2")) {
 
 		} else if (level.equals("menu")) {
-			setSize(screenWidth, screenHeight);
 
 			player.setX(64);
 			player.setY(200);
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+			
+			playerTurret.setX(64);
+			playerTurret.setY(200);
+			playerTurret.show();
 		}
 	}
 
@@ -176,6 +188,30 @@ public class Game extends GameCore {
 			}
 		}
 
+		// Center the view on the player once it reaches the middle of the screen
+		// To move the view to the bottom
+		if (player.getY() + yo >= screenHeight / 2) {
+			if (-yo >= tmap.getPixelHeight() - screenHeight) {
+				// If the bottom edge of the map is reached, do not move further
+				yo = -tmap.getPixelHeight() + screenHeight;
+			} else {
+				// Center on player
+				yo = -((int) player.getY()) + (screenHeight / 2);
+			}
+		}
+
+		// Center the view on the player once it reaches the middle of the screen
+		// To move the view to the top
+		if (player.getY() + yo <= screenHeight / 2) {
+			if (yo >= 0) {
+				// If the top edge of the map is reached, do not move further
+				yo = 0;
+			} else {
+				// Center on player
+				yo = -((int) player.getY()) + (screenHeight / 2);
+			}
+		}
+
 		g.setColor(Color.white);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -191,7 +227,10 @@ public class Game extends GameCore {
 		if (level.equals("level 1")) {
 			// Apply offsets to player and draw
 			player.setOffsets(xo, yo);
+			playerTurret.setOffsets(xo, yo);
+			playerTurret.setPosition(player.getX(), player.getY());
 			player.draw(g);
+			playerTurret.drawTransformed(g);
 
 			// Draw the enemy
 			enemy.setOffsets(xo, yo);
@@ -234,6 +273,8 @@ public class Game extends GameCore {
 		} else if (level.equals("menu")) {
 			player.setScale(2f);
 			player.drawTransformed(g);
+			playerTurret.setScale(2f);
+			playerTurret.drawTransformed(g);
 
 			g.setColor(colour1);
 			g.fillRect(screenWidth - 200, 100, 150, 50);
@@ -256,6 +297,7 @@ public class Game extends GameCore {
 	public void update(long elapsed) {
 		if (level.equals("menu")) {
 			player.update(elapsed);
+			playerTurret.update(elapsed);
 		} else {
 
 			// Clouds
@@ -264,6 +306,7 @@ public class Game extends GameCore {
 
 			// Now update the sprites animation and position
 			player.update(elapsed);
+			playerTurret.update(elapsed);
 			enemy.update(elapsed);
 
 			if (!projectiles.isEmpty()) {
@@ -486,7 +529,8 @@ public class Game extends GameCore {
 				colour1 = Color.black;
 				// Restore the default size of the player
 				player.setScale(1f);
-			} 
+				playerTurret.setScale(1f);
+			}
 			if (e.getY() > 200 && e.getY() < 250) {
 				// Change the level and start the game
 				level = "level 2";
@@ -495,6 +539,7 @@ public class Game extends GameCore {
 				colour2 = Color.black;
 				// Restore the default size of the player
 				player.setScale(1f);
+				playerTurret.setScale(1f);
 			}
 		}
 	}
@@ -518,6 +563,7 @@ public class Game extends GameCore {
 				colour2 = Color.black;
 			}
 		}
+		playerTurret.setRotation(Math.toDegrees(Math.atan(player.getY() - e.getY()/player.getX() - e.getX()))+90);
 	}
 
 	@Override
