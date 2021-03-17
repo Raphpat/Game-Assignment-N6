@@ -10,7 +10,7 @@ import game2D.*;
  */
 public class Projectile extends Sprite {
 
-	private static String projImage = "images/rock.png";
+	private static String projImage = "images/Apple.png";
 	private static String explodingImage = "images/Desappearing (96x96).png";
 
 	private long explodingTime;
@@ -31,13 +31,14 @@ public class Projectile extends Sprite {
 
 		Animation anim = new Animation();
 
-		anim.addFrame(new ImageIcon(projImage).getImage(), 500);
+		//anim.addFrame(new ImageIcon(projImage).getImage(), 500);
+		anim.loadAnimationFromSheet(projImage, 17, 1, 150);
 		
 		setAnimation(anim);
 
-		setScale(0.5f);
+		//setScale(0.5f);
 		setPosition(x, y);
-		setRotation(45);
+		//setRotation(45);
 		setVelocityX((tx - x) / 1000);
 		setVelocityY((ty - y) / 1000);
 	}
@@ -49,8 +50,9 @@ public class Projectile extends Sprite {
 		setAnimation(anim);
 		explodingTime = elapsed;
 		exploding = true;
-		shiftX(-12);
-		shiftY(-12);
+		// Offset to center the explosion on the projectile
+		shiftX(-40);
+		shiftY(-40);
 	}
 
 	/**
