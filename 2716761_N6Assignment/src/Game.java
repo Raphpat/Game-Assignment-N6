@@ -42,12 +42,10 @@ public class Game extends GameCore {
 	Color colour2 = Color.black;
 
 	// Game resources
-	Animation tankBody;
-	Animation tankTurret;
+	Animation character;
 	Animation rocky;
 
 	Sprite player = null;
-	Sprite playerTurret = null;
 	Sprite enemy = null;
 	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -77,14 +75,11 @@ public class Game extends GameCore {
 	public void init() {
 //		Sprite s; // Temporary reference to a sprite
 
-		tankBody = new Animation();
-		tankTurret = new Animation();
+		character = new Animation();
 		// landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-		tankBody.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
-		tankTurret.addFrame(loadImage("images/Tank Green/Tank Green Turret Idle.png"), 100);
+		character.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
 		// Initialise the player with an animation
-		player = new Sprite(tankBody);
-		playerTurret = new Sprite(tankTurret);
+		player = new Sprite(character);
 		player.setMaxVelocity(0.2f);
 
 		// Temporary enemy stuff
@@ -133,9 +128,6 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
-			playerTurret.setX(64);
-			playerTurret.setY(200);
-			playerTurret.show();
 
 			enemy.setX(500);
 			enemy.setY(200);
@@ -153,10 +145,6 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
-			
-			playerTurret.setX(64);
-			playerTurret.setY(200);
-			playerTurret.show();
 		}
 	}
 
@@ -227,10 +215,7 @@ public class Game extends GameCore {
 		if (level.equals("level 1")) {
 			// Apply offsets to player and draw
 			player.setOffsets(xo, yo);
-			playerTurret.setOffsets(xo, yo);
-			playerTurret.setPosition(player.getX(), player.getY());
 			player.draw(g);
-			playerTurret.drawTransformed(g);
 
 			// Draw the enemy
 			enemy.setOffsets(xo, yo);
@@ -273,8 +258,6 @@ public class Game extends GameCore {
 		} else if (level.equals("menu")) {
 			player.setScale(2f);
 			player.drawTransformed(g);
-			playerTurret.setScale(2f);
-			playerTurret.drawTransformed(g);
 
 			g.setColor(colour1);
 			g.fillRect(screenWidth - 200, 100, 150, 50);
@@ -297,7 +280,6 @@ public class Game extends GameCore {
 	public void update(long elapsed) {
 		if (level.equals("menu")) {
 			player.update(elapsed);
-			playerTurret.update(elapsed);
 		} else {
 
 			// Clouds
@@ -306,7 +288,6 @@ public class Game extends GameCore {
 
 			// Now update the sprites animation and position
 			player.update(elapsed);
-			playerTurret.update(elapsed);
 			enemy.update(elapsed);
 
 			if (!projectiles.isEmpty()) {
@@ -529,7 +510,6 @@ public class Game extends GameCore {
 				colour1 = Color.black;
 				// Restore the default size of the player
 				player.setScale(1f);
-				playerTurret.setScale(1f);
 			}
 			if (e.getY() > 200 && e.getY() < 250) {
 				// Change the level and start the game
@@ -539,7 +519,6 @@ public class Game extends GameCore {
 				colour2 = Color.black;
 				// Restore the default size of the player
 				player.setScale(1f);
-				playerTurret.setScale(1f);
 			}
 		}
 	}
@@ -563,7 +542,6 @@ public class Game extends GameCore {
 				colour2 = Color.black;
 			}
 		}
-		playerTurret.setRotation(Math.toDegrees(Math.atan(player.getY() - e.getY()/player.getX() - e.getX()))+90);
 	}
 
 	@Override
