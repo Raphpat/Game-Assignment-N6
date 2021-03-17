@@ -77,7 +77,7 @@ public class Game extends GameCore {
 
 		character = new Animation();
 		// landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-		character.addFrame(loadImage("images/Tank Green/Tank Green Base Idle.png"), 100);
+		character.loadAnimationFromSheet("images/characterSheet.png", 4, 1, 100);;
 		// Initialise the player with an animation
 		player = new Sprite(character);
 		player.setMaxVelocity(0.2f);
@@ -287,7 +287,13 @@ public class Game extends GameCore {
 //			s.update(elapsed);
 
 			// Now update the sprites animation and position
+			if(player.getVelocityX() == 0 && player.getVelocityY() == 0) {
+				character.pauseAt(1);
+			} else {
+				character.play();
+			}
 			player.update(elapsed);
+			
 			enemy.update(elapsed);
 
 			if (!projectiles.isEmpty()) {
