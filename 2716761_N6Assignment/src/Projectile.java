@@ -50,7 +50,7 @@ public class Projectile extends Sprite {
 	public void destroy(long elapsed) {
 		Animation anim = new Animation();
 		anim.loadAnimationFromSheet(explodingImage, 7, 1, explosionTimePerFrame);
-		sound.run();
+		sound.start();
 
 		setAnimation(anim);
 		explodingTime = elapsed;
