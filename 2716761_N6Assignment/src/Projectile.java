@@ -47,6 +47,13 @@ public class Projectile extends Sprite {
 		setVelocityY((ty - y) / 1000);
 	}
 
+	/**
+	 * A dummy constructor
+	 */
+	public Projectile() {
+		super();
+	}
+
 	public void destroy(long elapsed) {
 		Animation anim = new Animation();
 		anim.loadAnimationFromSheet(explodingImage, 7, 1, explosionTimePerFrame);

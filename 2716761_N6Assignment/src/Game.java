@@ -77,14 +77,16 @@ public class Game extends GameCore {
 
 		character = new Animation();
 		// landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-		character.loadAnimationFromSheet("images/characterSheet.png", 4, 1, 100);;
+		character.loadAnimationFromSheet("images/characterSheet.png", 4, 1, 100);
+		;
 		// Initialise the player with an animation
 		player = new Sprite(character);
 		player.setMaxVelocity(0.2f);
 
 		// Temporary enemy stuff
 		mage = new Animation();
-		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);;
+		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
+		;
 
 		enemy = new Sprite(mage);
 
@@ -287,13 +289,13 @@ public class Game extends GameCore {
 //			s.update(elapsed);
 
 			// Now update the sprites animation and position
-			if(player.getVelocityX() == 0 && player.getVelocityY() == 0) {
+			if (player.getVelocityX() == 0 && player.getVelocityY() == 0) {
 				character.pauseAt(1);
 			} else {
 				character.play();
 			}
 			player.update(elapsed);
-			
+
 			enemy.update(elapsed);
 
 			if (!projectiles.isEmpty()) {
@@ -449,6 +451,10 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(1);
+
+			if (s.getClass().equals(new Projectile().getClass())) {
+				checkProjDestruction(ch, xtile, ytile);
+			}
 			return true;
 		}
 
@@ -464,6 +470,10 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(-1);
+			
+			if (s.getClass().equals(new Projectile().getClass())) {
+				checkProjDestruction(ch, xtile, ytile);
+			}
 			return true;
 		}
 
@@ -478,6 +488,10 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(1);
+			
+			if (s.getClass().equals(new Projectile().getClass())) {
+				checkProjDestruction(ch, xtile, ytile);
+			}
 			return true;
 		}
 
@@ -492,10 +506,30 @@ public class Game extends GameCore {
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(-1);
+			
+			if (s.getClass().equals(new Projectile().getClass())) {
+				checkProjDestruction(ch, xtile, ytile);
+			}
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * 
+	 * @param ch
+	 * @param x
+	 * @param y
+	 */
+	public void checkProjDestruction(char ch, int x, int y) {
+		if (ch == 't') {
+			tmap.setTileChar('s', x, y);
+		} else if (ch == 's') {
+			tmap.setTileChar('c', x, y);
+		} else if (ch == 'c') {
+			tmap.setTileChar('.', x, y);
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
