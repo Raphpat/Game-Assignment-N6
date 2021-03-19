@@ -313,14 +313,15 @@ public class Game extends GameCore {
 			}
 
 			// Then check for any collisions that may have occurred
-			if (boundingCircleCollision(player, enemy)) {
+			if (enemy.isVisible() && boundingCircleCollision(player, enemy)) {
 				player.stop();
 			}
 
 			// Check for hits from projectiles onto the enemy sprite
 			for (Projectile proj : projectiles) {
-				if (!proj.isExploding() && boundingCircleCollision(proj, enemy)) {
+				if (enemy.isVisible() && !proj.isExploding() && boundingCircleCollision(proj, enemy)) {
 					// Move the projectile into the sprite a bit more before stopping it
+					enemy.hide();
 					proj.shiftX(proj.getVelocityX() * 100);
 					proj.shiftY(proj.getVelocityY() * 100);
 					proj.stop();
