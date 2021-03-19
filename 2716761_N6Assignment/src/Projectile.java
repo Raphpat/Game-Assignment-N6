@@ -12,6 +12,9 @@ public class Projectile extends Sprite {
 
 	private static String projImage = "images/Apple.png";
 	private static String explodingImage = "images/Desappearing (96x96).png";
+	private static String soundFile = "sounds/splat.wav";
+	
+	private Sound sound;
 
 	private long explodingTime;
 	private boolean exploding;
@@ -28,6 +31,7 @@ public class Projectile extends Sprite {
 	public Projectile(float x, float y, int tx, int ty) {
 		super();
 		exploding = false;
+		sound = new Sound(soundFile);
 
 		Animation anim = new Animation();
 
@@ -46,6 +50,7 @@ public class Projectile extends Sprite {
 	public void destroy(long elapsed) {
 		Animation anim = new Animation();
 		anim.loadAnimationFromSheet(explodingImage, 7, 1, explosionTimePerFrame);
+		sound.run();
 
 		setAnimation(anim);
 		explodingTime = elapsed;
