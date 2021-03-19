@@ -43,7 +43,7 @@ public class Game extends GameCore {
 
 	// Game resources
 	Animation character;
-	Animation rocky;
+	Animation mage;
 
 	Sprite player = null;
 	Sprite enemy = null;
@@ -83,10 +83,10 @@ public class Game extends GameCore {
 		player.setMaxVelocity(0.2f);
 
 		// Temporary enemy stuff
-		rocky = new Animation();
-		rocky.addFrame(loadImage("images/rock.png"), 100);
+		mage = new Animation();
+		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);;
 
-		enemy = new Sprite(rocky);
+		enemy = new Sprite(mage);
 
 		// Cloud animations on hold for now
 		// Load a single cloud animation

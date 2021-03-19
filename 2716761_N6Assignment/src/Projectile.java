@@ -32,7 +32,7 @@ public class Projectile extends Sprite {
 		Animation anim = new Animation();
 
 		//anim.addFrame(new ImageIcon(projImage).getImage(), 500);
-		anim.loadAnimationFromSheet(projImage, 17, 1, 150);
+		anim.loadAnimationFromSheet(projImage, 17, 1, 100);
 		
 		setAnimation(anim);
 
