@@ -54,8 +54,6 @@ public class Game extends GameCore {
 
 	TileMap tmap = new TileMap(); // Our tile map, note that we load it in initialiseGame()
 
-	long total; // The score will be the total time elapsed since a crash
-
 	/**
 	 * The obligatory main method that creates an instance of our class and starts
 	 * it running
@@ -99,8 +97,7 @@ public class Game extends GameCore {
 	 * that you can call it to restart the game.
 	 */
 	public void initialiseGame() {
-		total = 0;
-
+		gameEnd = false;
 		debug = false;
 
 		setSize(screenWidth, screenHeight);
@@ -118,7 +115,7 @@ public class Game extends GameCore {
 
 			enemy.setX(500);
 			enemy.setY(200);
-			enemy.setVelocityX(0);
+			enemy.setVelocityX(1f);
 			enemy.setVelocityY(0);
 			enemy.show();
 
@@ -352,6 +349,7 @@ public class Game extends GameCore {
 			}
 
 			checkTileCollision(player, tmap);
+			checkTileCollision(enemy, tmap);
 		}
 	}
 
