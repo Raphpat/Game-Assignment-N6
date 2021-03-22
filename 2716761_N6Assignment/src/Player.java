@@ -6,7 +6,7 @@ public class Player extends Sprite {
 	private static String playerImage = "images/characterSheet.png";
 	private static int MAX_SHOTS = 5;
 
-	private int shots;
+	private int shots = MAX_SHOTS;
 	private int reload = 5000;
 	private long reloadTime = 0;
 	private boolean reloading = false;
@@ -21,37 +21,36 @@ public class Player extends Sprite {
 	}
 
 	/**
-	 * @return the shots
+	 * @return the shots left in the player's clip
 	 */
 	public int getShots() {
 		return shots;
 	}
 
 	/**
-	 * Increments the shot counter
+	 * Decrements the shot left counter
 	 */
 	public void incrementShot() {
-		if (shots == MAX_SHOTS) {
-			shots = 0;
+		if (shots == 1) {
+			shots = MAX_SHOTS;
 			reloading = true;
 		} else {
-			shots++;
+			shots--;
 		}
 	}
-
+	
 	/**
-	 * @param i pause the animation at frame
+	 * @return total reload time of the player, in miliseconds
 	 */
-	public void pauseAt(int i) {
-		anim.pauseAt(i);
-
+	public int getReload() {
+		return reload;
 	}
-
+	
 	/**
-	 * Play the animation
+	 * @return how far into the reload the player is
 	 */
-	public void play() {
-		anim.play();
+	public long getReloadTime() {
+		return reloadTime;
 	}
 
 	/**

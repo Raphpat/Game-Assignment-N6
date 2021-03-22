@@ -37,15 +37,19 @@ public class Game extends GameCore {
 	// Game state flags
 	boolean flap = false;
 	boolean debug = false;
+	boolean gameEnd = false;
+	long gameEndTime = 0;
 	String level = "menu";
 	Color colour1 = Color.black;
 	Color colour2 = Color.black;
 
 	// Game resources
 	Animation mage;
+	Animation end;
 
 	Player player = null;
 	Sprite enemy = null;
+	Sprite cup = null;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	TileMap tmap = new TileMap(); // Our tile map, note that we load it in initialiseGame()
@@ -80,9 +84,13 @@ public class Game extends GameCore {
 		// Temporary enemy stuff
 		mage = new Animation();
 		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
-		;
 
 		enemy = new Sprite(mage);
+
+		end = new Animation();
+		end.loadAnimationFromSheet("images/end (Pressed) (64x64).png", 8, 1, 100);
+
+		cup = new Sprite(end);
 
 		initialiseGame();
 	}
@@ -114,6 +122,12 @@ public class Game extends GameCore {
 			enemy.setVelocityX(0);
 			enemy.setVelocityY(0);
 			enemy.show();
+
+			cup.setX(1000);
+			cup.setY(200);
+			cup.setVelocityX(0);
+			cup.setVelocityY(0);
+			cup.hide();
 
 			projectiles.clear();
 		} else if (level.equals("level 2")) {
@@ -201,6 +215,9 @@ public class Game extends GameCore {
 			enemy.setOffsets(xo, yo);
 			enemy.draw(g);
 
+			cup.setOffsets(xo, yo);
+			cup.draw(g);
+
 			if (!projectiles.isEmpty()) {
 				for (int i = 0; i < projectiles.size(); i++) {
 					Projectile rock = projectiles.get(i);
@@ -229,15 +246,27 @@ public class Game extends GameCore {
 			// Apply offsets to tile map and draw it
 			tmap.draw(g, xo, yo);
 
-			// Show score and status information
-			String msg = String.format("Score: %d", total / 100);
-			g.setColor(Color.darkGray);
-			g.drawString(msg, getWidth() - 80, 50);
+			if (player.isReloading()) {
+				// Show reloading info
+				String msg = String.format("Relaoding: %d", player.getReload() - player.getReloadTime());
+				g.setColor(Color.darkGray);
+				g.drawString(msg, 20, 70);
+			} else {
+				// Draw an apple per reamining apple in the clip
+				for (int i = 0; i < player.getShots(); i++) {
+					g.drawImage(loadImage("AppleSingle.png"), 20, 150 + i*20, null);
+				}
+			}
+
 		} else if (level.equals("level 2")) {
 			// Do things for level 2 ? Or unify with level 1?
 		} else if (level.equals("menu")) {
+			xo = 0;
+			yo = 0;
+			player.setOffsets(xo, yo);
 			player.setScale(2f);
 			player.drawTransformed(g);
+			player.playAnimation();
 
 			g.setColor(colour1);
 			g.fillRect(screenWidth - 200, 100, 150, 50);
@@ -258,23 +287,35 @@ public class Game extends GameCore {
 	 *                elapsed
 	 */
 	public void update(long elapsed) {
-		if (level.equals("menu")) {
+		if (gameEnd) {
+			player.update(elapsed);
+			player.stop();
+
+			enemy.update(elapsed);
+
+			cup.update(elapsed);
+
+			gameEndTime += elapsed;
+			if (gameEndTime >= 5000) {
+				level = "menu";
+				gameEnd = false;
+				gameEndTime = 0;
+				initialiseGame();
+			}
+		} else if (level.equals("menu")) {
 			player.update(elapsed);
 		} else {
-
-			// Clouds
-//		for (Sprite s : clouds)
-//			s.update(elapsed);
-
 			// Now update the sprites animation and position
 			if (player.getVelocityX() == 0 && player.getVelocityY() == 0) {
-				player.pauseAt(1);
+				player.pauseAnimationAtFrame(1);
 			} else {
-				player.play();
+				player.playAnimation();
 			}
 			player.update(elapsed);
 
 			enemy.update(elapsed);
+
+			cup.update(elapsed);
 
 			if (!projectiles.isEmpty()) {
 				for (int i = 0; i < projectiles.size(); i++) {
@@ -353,14 +394,14 @@ public class Game extends GameCore {
 			}
 
 			if (key == KeyEvent.VK_SPACE) {
-				if(player.isReloading()) {
-					
+				if (player.isReloading()) {
+
 				} else {
 					Point p = MouseInfo.getPointerInfo().getLocation();
 					projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y - yo));
 					player.incrementShot();
 				}
-				
+
 			}
 
 			if (key == KeyEvent.VK_COMMA) {
@@ -431,6 +472,13 @@ public class Game extends GameCore {
 
 		if (ch != '.') // If it's not a dot (empty space), handle it
 		{
+			// Check for the cup
+			if (ch == 'e') {
+				tmap.setTileChar('.', xtile, ytile);
+				cup.setPosition(sx, sy);
+				cup.show();
+				gameEnd = true;
+			}
 			// Stop the sprite and move him back one pixel
 			s.stop();
 			s.shiftX(1);
@@ -450,11 +498,18 @@ public class Game extends GameCore {
 
 		// If it's not empty space
 		if (ch != '.') {
+			// Check for the cup
+			if (ch == 'e') {
+				tmap.setTileChar('.', xtile, ytile);
+				cup.setPosition(sx, sy);
+				cup.show();
+				gameEnd = true;
+			}
 			// Stop the sprite and move him back one pixel
 			s.stop();
 			s.shiftX(1);
 			s.shiftY(-1);
-			
+
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
@@ -468,11 +523,18 @@ public class Game extends GameCore {
 
 		// If it's not empty space
 		if (ch != '.') {
+			// Check for the cup
+			if (ch == 'e') {
+				tmap.setTileChar('.', xtile, ytile);
+				cup.setPosition(sx, sy);
+				cup.show();
+				gameEnd = true;
+			}
 			// Stop the sprite and move him back one pixel
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(1);
-			
+
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
@@ -486,11 +548,18 @@ public class Game extends GameCore {
 
 		// If it's not empty space
 		if (ch != '.') {
+			// Check for the cup
+			if (ch == 'e') {
+				tmap.setTileChar('.', xtile, ytile);
+				cup.setPosition(sx, sy);
+				cup.show();
+				gameEnd = true;
+			}
 			// Stop the sprite and move him back one pixel
 			s.stop();
 			s.shiftX(-1);
 			s.shiftY(-1);
-			
+
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
