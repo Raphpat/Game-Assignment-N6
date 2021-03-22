@@ -42,10 +42,9 @@ public class Game extends GameCore {
 	Color colour2 = Color.black;
 
 	// Game resources
-	Animation character;
 	Animation mage;
 
-	Sprite player = null;
+	Player player = null;
 	Sprite enemy = null;
 	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -75,12 +74,8 @@ public class Game extends GameCore {
 	public void init() {
 //		Sprite s; // Temporary reference to a sprite
 
-		character = new Animation();
-		// landing.loadAnimationFromSheet("images/landbird.png", 4, 1, 60);
-		character.loadAnimationFromSheet("images/characterSheet.png", 4, 1, 100);
-		;
 		// Initialise the player with an animation
-		player = new Sprite(character);
+		player = new Player();
 		player.setMaxVelocity(0.2f);
 
 		// Temporary enemy stuff
@@ -290,9 +285,9 @@ public class Game extends GameCore {
 
 			// Now update the sprites animation and position
 			if (player.getVelocityX() == 0 && player.getVelocityY() == 0) {
-				character.pauseAt(1);
+				player.pauseAt(1);
 			} else {
-				character.play();
+				player.play();
 			}
 			player.update(elapsed);
 

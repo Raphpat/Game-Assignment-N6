@@ -420,6 +420,4 @@ public class Sprite {
     	xoff = x;
     	yoff = y;
     }
-    
-
 }
