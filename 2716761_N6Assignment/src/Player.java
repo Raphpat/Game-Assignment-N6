@@ -7,7 +7,7 @@ public class Player extends Sprite {
 	private static int MAX_SHOTS = 5;
 
 	private int shots;
-	private int reload = 500;
+	private int reload = 5000;
 	private long reloadTime = 0;
 	private boolean reloading = false;
 	private Animation anim = new Animation();
@@ -17,6 +17,7 @@ public class Player extends Sprite {
 		super();
 
 		anim.loadAnimationFromSheet(playerImage, 4, 1, 100);
+		setAnimation(anim);
 	}
 
 	/**
@@ -70,8 +71,10 @@ public class Player extends Sprite {
 	public void update(long elapsedTime) {
 		super.update(elapsedTime);
 		if (reloading) {
-			reloadTime = elapsedTime + reload;
-		} else if (reloadTime >= elapsedTime) {
+			reloadTime += elapsedTime;
+		} 
+		// Allow shooting again
+		if (reloadTime >= reload) {
 			reloading = false;
 			reloadTime = 0;
 		}
