@@ -353,9 +353,14 @@ public class Game extends GameCore {
 			}
 
 			if (key == KeyEvent.VK_SPACE) {
-				Point p = MouseInfo.getPointerInfo().getLocation();
-
-				projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y - yo));
+				if(player.isReloading()) {
+					
+				} else {
+					Point p = MouseInfo.getPointerInfo().getLocation();
+					projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y - yo));
+					player.incrementShot();
+				}
+				
 			}
 
 			if (key == KeyEvent.VK_COMMA) {

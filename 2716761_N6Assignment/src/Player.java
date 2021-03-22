@@ -5,14 +5,17 @@ public class Player extends Sprite {
 
 	private static String playerImage = "images/characterSheet.png";
 	private static int MAX_SHOTS = 5;
-	
+
 	private int shots;
 	private int reload = 500;
+	private long reloadTime = 0;
+	private boolean reloading = false;
 	private Animation anim = new Animation();
-	
+	private boolean death = false;
+
 	public Player() {
 		super();
-		
+
 		anim.loadAnimationFromSheet(playerImage, 4, 1, 100);
 	}
 
@@ -27,20 +30,20 @@ public class Player extends Sprite {
 	 * Increments the shot counter
 	 */
 	public void incrementShot() {
-		if(shots == MAX_SHOTS) {
+		if (shots == MAX_SHOTS) {
 			shots = 0;
+			reloading = true;
 		} else {
 			shots++;
 		}
 	}
-	
 
-    /**
-     * @param i pause the animation at frame
-     */
+	/**
+	 * @param i pause the animation at frame
+	 */
 	public void pauseAt(int i) {
 		anim.pauseAt(i);
-		
+
 	}
 
 	/**
@@ -48,6 +51,31 @@ public class Player extends Sprite {
 	 */
 	public void play() {
 		anim.play();
+	}
+
+	/**
+	 * @return the reloading
+	 */
+	public boolean isReloading() {
+		return reloading;
+	}
+
+	/**
+	 * @param reloading the reloading to set
+	 */
+	public void setReloading(boolean reloading) {
+		this.reloading = reloading;
+	}
+
+	public void update(long elapsedTime) {
+		super.update(elapsedTime);
+		if (reloading) {
+			reloadTime = elapsedTime + reload;
+		} else if (reloadTime >= elapsedTime) {
+			reloading = false;
+			reloadTime = 0;
+		}
+
 	}
 
 }
