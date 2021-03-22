@@ -46,7 +46,6 @@ public class Game extends GameCore {
 
 	Player player = null;
 	Sprite enemy = null;
-	ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	TileMap tmap = new TileMap(); // Our tile map, note that we load it in initialiseGame()
@@ -84,22 +83,6 @@ public class Game extends GameCore {
 		;
 
 		enemy = new Sprite(mage);
-
-		// Cloud animations on hold for now
-		// Load a single cloud animation
-//		Animation ca = new Animation();
-//		ca.addFrame(loadImage("images/cloud.png"), 1000);
-
-		// Create 3 clouds at random positions off the screen
-		// to the right
-//		for (int c = 0; c < 3; c++) {
-//			s = new Sprite(ca);
-//			s.setX(screenWidth + (int) (Math.random() * 200.0f));
-//			s.setY(30 + (int) (Math.random() * 150.0f));
-//			s.setVelocityX(-0.02f);
-//			s.show();
-//			clouds.add(s);
-//		}
 
 		initialiseGame();
 	}
