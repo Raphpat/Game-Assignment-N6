@@ -89,7 +89,6 @@ public class Game extends GameCore {
 
 		end = new Animation();
 		end.loadAnimationFromSheet("images/end (Pressed) (64x64).png", 8, 1, 100);
-
 		cup = new Sprite(end);
 
 		initialiseGame();
@@ -254,7 +253,7 @@ public class Game extends GameCore {
 			} else {
 				// Draw an apple per reamining apple in the clip
 				for (int i = 0; i < player.getShots(); i++) {
-					g.drawImage(loadImage("AppleSingle.png"), 20, 150 + i*20, null);
+					g.drawImage(loadImage("images/AppleSingle.png"), 30 + i*20, 70, null);
 				}
 			}
 
