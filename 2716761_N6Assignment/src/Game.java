@@ -143,7 +143,7 @@ public class Game extends GameCore {
 			enemy[3].setVelocityY(0);
 			enemy[3].show();
 			
-			enemy[4].setX(1248);
+			enemy[4].setX(1216);
 			enemy[4].setY(288);
 			enemy[4].setVelocityX(0);
 			enemy[4].setVelocityY(0.1f);
