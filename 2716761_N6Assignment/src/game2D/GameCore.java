@@ -85,6 +85,7 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
     	
 
         setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         addKeyListener(this);
         addMouseListener(this);
