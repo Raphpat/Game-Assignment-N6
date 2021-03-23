@@ -82,12 +82,11 @@ public class Game extends GameCore {
 		player = new Player();
 		player.setMaxVelocity(0.2f);
 
-		// Temporary enemy stuff
-		mage = new Animation();
-		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
-
-		enemy = new Sprite[8];
+		enemy = new Sprite[9];
 		for(int i = 0; i < enemy.length; i++) {
+			// Temporary enemy stuff
+			mage = new Animation();
+			mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
 			enemy[i] = new Sprite(mage);
 		}
 
@@ -114,7 +113,7 @@ public class Game extends GameCore {
 			setVisible(true);
 
 			player.setX(64);
-			player.setY(160);
+			player.setY(192);
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
@@ -130,7 +129,7 @@ public class Game extends GameCore {
 			enemy[1].setVelocityX(0.1f);
 			enemy[1].setVelocityY(0);
 			enemy[1].show();
-			
+
 			enemy[2].setX(832);
 			enemy[2].setY(480);
 			enemy[2].setVelocityX(0.1f);
@@ -166,7 +165,13 @@ public class Game extends GameCore {
 			enemy[7].setVelocityX(0.1f);
 			enemy[7].setVelocityY(0);
 			enemy[7].show();
-
+			
+			enemy[8].setX(1344);
+			enemy[8].setY(672);
+			enemy[8].setVelocityX(0);
+			enemy[8].setVelocityY(0.1f);
+			enemy[8].show();
+			
 			cup.setX(1000);
 			cup.setY(200);
 			cup.setVelocityX(0);
@@ -485,12 +490,12 @@ public class Game extends GameCore {
 			}
 
 			if (key == KeyEvent.VK_SPACE) {
-				if (player.isReloading()) {
-
-				} else {
+				if (!player.isReloading()) {
 					Point p = MouseInfo.getPointerInfo().getLocation();
 					projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y - yo));
-					player.incrementShot();
+					if(!debug) {
+						player.incrementShot();
+					}
 				}
 
 			}
