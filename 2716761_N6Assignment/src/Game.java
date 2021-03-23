@@ -4,6 +4,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import java.awt.*;
 
 import game2D.*;
@@ -48,7 +51,7 @@ public class Game extends GameCore {
 	Animation end;
 
 	Player player = null;
-	Sprite enemy = null;
+	Sprite[] enemy = null;
 	Sprite cup = null;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
@@ -83,7 +86,10 @@ public class Game extends GameCore {
 		mage = new Animation();
 		mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
 
-		enemy = new Sprite(mage);
+		enemy = new Sprite[8];
+		for(int i = 0; i < enemy.length; i++) {
+			enemy[i] = new Sprite(mage);
+		}
 
 		end = new Animation();
 		end.loadAnimationFromSheet("images/end (Pressed) (64x64).png", 8, 1, 100);
@@ -108,16 +114,58 @@ public class Game extends GameCore {
 			setVisible(true);
 
 			player.setX(64);
-			player.setY(200);
+			player.setY(160);
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
 
-			enemy.setX(500);
-			enemy.setY(150);
-			enemy.setVelocityX(0.2f);
-			enemy.setVelocityY(0);
-			enemy.show();
+			enemy[0].setX(576);
+			enemy[0].setY(160);
+			enemy[0].setVelocityX(0.1f);
+			enemy[0].setVelocityY(0);
+			enemy[0].show();
+
+			enemy[1].setX(128);
+			enemy[1].setY(448);
+			enemy[1].setVelocityX(0.1f);
+			enemy[1].setVelocityY(0);
+			enemy[1].show();
+			
+			enemy[2].setX(832);
+			enemy[2].setY(480);
+			enemy[2].setVelocityX(0.1f);
+			enemy[2].setVelocityY(0);
+			enemy[2].show();
+			
+			enemy[3].setX(832);
+			enemy[3].setY(192);
+			enemy[3].setVelocityX(0.1f);
+			enemy[3].setVelocityY(0);
+			enemy[3].show();
+			
+			enemy[4].setX(1248);
+			enemy[4].setY(288);
+			enemy[4].setVelocityX(0);
+			enemy[4].setVelocityY(0.1f);
+			enemy[4].show();
+
+			enemy[5].setX(1088);
+			enemy[5].setY(480);
+			enemy[5].setVelocityX(0.1f);
+			enemy[5].setVelocityY(0);
+			enemy[5].show();
+
+			enemy[6].setX(1440);
+			enemy[6].setY(224);
+			enemy[6].setVelocityX(0.1f);
+			enemy[6].setVelocityY(0);
+			enemy[6].show();
+
+			enemy[7].setX(1600);
+			enemy[7].setY(352);
+			enemy[7].setVelocityX(0.1f);
+			enemy[7].setVelocityY(0);
+			enemy[7].show();
 
 			cup.setX(1000);
 			cup.setY(200);
@@ -207,9 +255,11 @@ public class Game extends GameCore {
 			player.setOffsets(xo, yo);
 			player.draw(g);
 
-			// Draw the enemy
-			enemy.setOffsets(xo, yo);
-			enemy.draw(g);
+			// Draw the enemies
+			for (Sprite s : enemy) {
+				s.setOffsets(xo, yo);
+				s.draw(g);
+			}
 
 			cup.setOffsets(xo, yo);
 			cup.draw(g);
@@ -230,8 +280,10 @@ public class Game extends GameCore {
 				player.drawBoundingBox(g);
 				player.drawBoundingCircle(g);
 
-				enemy.drawBoundingBox(g);
-				enemy.drawBoundingCircle(g);
+				for (Sprite s : enemy) {
+					s.drawBoundingBox(g);
+					s.drawBoundingCircle(g);
+				}
 
 				for (Projectile proj : projectiles) {
 					proj.drawBoundingBox(g);
@@ -250,7 +302,7 @@ public class Game extends GameCore {
 			} else {
 				// Draw an apple per reamining apple in the clip
 				for (int i = 0; i < player.getShots(); i++) {
-					g.drawImage(loadImage("images/AppleSingle.png"), 30 + i*20, 70, null);
+					g.drawImage(loadImage("images/AppleSingle.png"), 30 + i * 20, 70, null);
 				}
 			}
 
@@ -287,7 +339,9 @@ public class Game extends GameCore {
 			player.update(elapsed);
 			player.stop();
 
-			enemy.update(elapsed);
+			for (Sprite s : enemy) {
+				s.update(elapsed);
+			}
 
 			cup.update(elapsed);
 
@@ -309,7 +363,9 @@ public class Game extends GameCore {
 			}
 			player.update(elapsed);
 
-			enemy.update(elapsed);
+			for (Sprite s : enemy) {
+				s.update(elapsed);
+			}
 
 			cup.update(elapsed);
 
@@ -329,31 +385,64 @@ public class Game extends GameCore {
 			}
 
 			// Then check for any collisions that may have occurred
-			if (enemy.isVisible() && boundingCircleCollision(player, enemy)) {
-				player.stop();
+			for (Sprite s : enemy) {
+				if (s.isVisible() && boundingCircleCollision(player, s)) {
+					JOptionPane.showMessageDialog(null, "Try Again!");
+					initialiseGame();
+				}
 			}
 
 			// Check for hits from projectiles onto the enemy sprite
 			for (Projectile proj : projectiles) {
-				if (enemy.isVisible() && !proj.isExploding() && boundingCircleCollision(proj, enemy)) {
-					// Move the projectile into the sprite a bit more before stopping it
-					enemy.hide();
-					proj.shiftX(proj.getVelocityX() * 100);
-					proj.shiftY(proj.getVelocityY() * 100);
-					proj.stop();
+				for (Sprite s : enemy) {
+					if (s.isVisible() && !proj.isExploding() && boundingCircleCollision(proj, s)) {
+						// Move the projectile into the sprite a bit more before stopping it
+						s.hide();
+						proj.shiftX(proj.getVelocityX() * 100);
+						proj.shiftY(proj.getVelocityY() * 100);
+						proj.stop();
 
-					proj.destroy(elapsed);
-				}
-				if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
-					projectiles.remove(proj);
+						proj.destroy(elapsed);
+					}
+					if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
+						projectiles.remove(proj);
+					}
 				}
 			}
 
-			if(checkTileCollision(player, tmap)) {
+			if (checkTileCollision(player, tmap)) {
+				// Move the sprite out of the block
+				if(player.getVelocityX() > 0) {
+					player.shiftX(-2);
+				} else if(player.getVelocityX() < 0) {
+					player.shiftX(2);
+				}
+				if(player.getVelocityY() > 0) {
+					player.shiftY(-2);
+				} else if(player.getVelocityY() < 0) {
+					player.shiftY(2);
+				}
+				
 				player.stop();
 			}
-			if(checkTileCollision(enemy, tmap)) {
-				enemy.setVelocity(-enemy.getVelocityX(), -enemy.getVelocityY());
+
+			for (Sprite s : enemy) {
+				if (checkTileCollision(s, tmap)) {
+					// Move the sprite out of the block
+					if(s.getVelocityX() > 0) {
+						s.shiftX(-1);
+					} else if(s.getVelocityX() < 0) {
+						s.shiftX(1);
+					}
+					if(s.getVelocityY() > 0) {
+						s.shiftY(-1);
+					} else if(s.getVelocityY() < 0) {
+						s.shiftY(1);
+					}
+					
+					// turn the sprite around
+					s.setVelocity(-s.getVelocityX(), -s.getVelocityY());
+				}
 			}
 		}
 	}
@@ -545,7 +634,7 @@ public class Game extends GameCore {
 				cup.show();
 				gameEnd = true;
 			}
-			
+
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
