@@ -11,7 +11,6 @@ public class Player extends Sprite {
 	private long reloadTime = 0;
 	private boolean reloading = false;
 	private Animation anim = new Animation();
-	private boolean death = false;
 
 	public Player() {
 		super();
@@ -77,7 +76,5 @@ public class Player extends Sprite {
 			reloading = false;
 			reloadTime = 0;
 		}
-
 	}
-
 }
