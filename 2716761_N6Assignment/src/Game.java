@@ -427,7 +427,7 @@ public class Game extends GameCore {
 				} else if(player.getVelocityY() < 0) {
 					player.shiftY(2);
 				}
-				
+				// TODO fix the glitching through walls
 				player.stop();
 			}
 
@@ -444,7 +444,7 @@ public class Game extends GameCore {
 					} else if(s.getVelocityY() < 0) {
 						s.shiftY(1);
 					}
-					
+					// TODO fix the glitching through walls
 					// turn the sprite around
 					s.setVelocity(-s.getVelocityX(), -s.getVelocityY());
 				}
