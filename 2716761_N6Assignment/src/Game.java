@@ -114,8 +114,8 @@ public class Game extends GameCore {
 			player.show();
 
 			enemy.setX(500);
-			enemy.setY(200);
-			enemy.setVelocityX(1f);
+			enemy.setY(150);
+			enemy.setVelocityX(0.2f);
 			enemy.setVelocityY(0);
 			enemy.show();
 
@@ -318,6 +318,7 @@ public class Game extends GameCore {
 					Projectile rock = projectiles.get(i);
 					rock.update(elapsed);
 					if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
+						rock.stop();
 						rock.destroy(elapsed);
 					}
 
@@ -348,8 +349,12 @@ public class Game extends GameCore {
 				}
 			}
 
-			checkTileCollision(player, tmap);
-			checkTileCollision(enemy, tmap);
+			if(checkTileCollision(player, tmap)) {
+				player.stop();
+			}
+			if(checkTileCollision(enemy, tmap)) {
+				enemy.setVelocity(-enemy.getVelocityX(), -enemy.getVelocityY());
+			}
 		}
 	}
 
@@ -476,10 +481,6 @@ public class Game extends GameCore {
 				cup.show();
 				gameEnd = true;
 			}
-			// Stop the sprite and move him back one pixel
-			s.stop();
-			s.shiftX(1);
-			s.shiftY(1);
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -502,10 +503,6 @@ public class Game extends GameCore {
 				cup.show();
 				gameEnd = true;
 			}
-			// Stop the sprite and move him back one pixel
-			s.stop();
-			s.shiftX(1);
-			s.shiftY(-1);
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -527,10 +524,6 @@ public class Game extends GameCore {
 				cup.show();
 				gameEnd = true;
 			}
-			// Stop the sprite and move him back one pixel
-			s.stop();
-			s.shiftX(-1);
-			s.shiftY(1);
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -552,11 +545,7 @@ public class Game extends GameCore {
 				cup.show();
 				gameEnd = true;
 			}
-			// Stop the sprite and move him back one pixel
-			s.stop();
-			s.shiftX(-1);
-			s.shiftY(-1);
-
+			
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
