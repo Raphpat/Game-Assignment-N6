@@ -180,7 +180,9 @@ public class Game extends GameCore {
 
 			projectiles.clear();
 		} else if (level.equals("level 2")) {
+			tmap.loadMap("maps", "level2.txt");
 
+			setVisible(true);
 		} else if (level.equals("menu")) {
 
 			player.setX(64);
@@ -255,7 +257,24 @@ public class Game extends GameCore {
 		/**
 		 * Draw differently based on the level
 		 */
-		if (level.equals("level 1")) {
+		if (level.equals("menu")) {
+			xo = 0;
+			yo = 0;
+			player.setOffsets(xo, yo);
+			player.setScale(2f);
+			player.drawTransformed(g);
+			player.playAnimation();
+
+			g.setColor(colour1);
+			g.fillRect(screenWidth - 200, 100, 150, 50);
+			g.setColor(colour2);
+			g.fillRect(screenWidth - 200, 200, 150, 50);
+
+			g.setColor(Color.white);
+			g.setFont(new Font("Monospaced", 2, 30));
+			g.drawString("Level 1", screenWidth - 190, 133);
+			g.drawString("Level 2", screenWidth - 190, 233);
+		} else {
 			// Apply offsets to player and draw
 			player.setOffsets(xo, yo);
 			player.draw(g);
@@ -311,25 +330,6 @@ public class Game extends GameCore {
 				}
 			}
 
-		} else if (level.equals("level 2")) {
-			// Do things for level 2 ? Or unify with level 1?
-		} else if (level.equals("menu")) {
-			xo = 0;
-			yo = 0;
-			player.setOffsets(xo, yo);
-			player.setScale(2f);
-			player.drawTransformed(g);
-			player.playAnimation();
-
-			g.setColor(colour1);
-			g.fillRect(screenWidth - 200, 100, 150, 50);
-			g.setColor(colour2);
-			g.fillRect(screenWidth - 200, 200, 150, 50);
-
-			g.setColor(Color.white);
-			g.setFont(new Font("Monospaced", 2, 30));
-			g.drawString("Level 1", screenWidth - 190, 133);
-			g.drawString("Level 2", screenWidth - 190, 233);
 		}
 	}
 
