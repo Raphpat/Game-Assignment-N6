@@ -523,7 +523,7 @@ public class Game extends GameCore {
 					initialiseGame();
 				}
 				// The enemies can shoot
-				if (!s.isReloading()) {
+				if (s.isVisible() && !s.isReloading()) {
 					double angle = Math.atan2(s.getY() - player.getY(), s.getX() - player.getX()) + Math.PI;
 					Velocity v = new Velocity(0.3, angle);
 					enemyProjectiles.add(new Projectile(s.getX(), s.getY(), v));
