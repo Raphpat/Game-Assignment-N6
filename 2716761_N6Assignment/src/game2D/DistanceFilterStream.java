@@ -4,7 +4,12 @@ import java.io.*;
 
 public class DistanceFilterStream extends FilterInputStream {
 
-	DistanceFilterStream(InputStream in) { super(in); }
+	private double distance;
+	
+	DistanceFilterStream(InputStream in, double dist) {
+		super(in); 
+		distance = dist;
+	}
 
 	// Get a value from the array 'buffer' at the given 'position'
 	// and convert it into short big-endian format
@@ -26,11 +31,8 @@ public class DistanceFilterStream extends FilterInputStream {
 	{
 		// Get the number of bytes in the data stream
 		int bytesRead = super.read(sample,offset,length);
-		// Work out a rate of change in volume per sample
-		// (multiplied by 2 because we are move at 2 bytes per loop cycle)
-		float change = 2.0f * (1.0f / (float)bytesRead);
-		// Start off at full volume
-		float volume = 1.0f;
+		// Modify the volume by the distance
+		float volume = (float) (1.0f / distance * 10); // TODO tune
 		short amp=0;
 
 		//	Loop through the sample 2 bytes at a time
@@ -42,8 +44,6 @@ public class DistanceFilterStream extends FilterInputStream {
 			amp = (short)((float)amp * volume);
 			// Set the new amplitude value
 			setSample(sample,p,amp);
-			// Decrease the volume
-			volume = volume - change;
 		}
 		return length;
 

@@ -33,7 +33,7 @@ public class Sound extends Thread {
 			File file = new File(filename);
 			AudioInputStream stream = AudioSystem.getAudioInputStream(file);
 			AudioFormat	format = stream.getFormat();
-			DistanceFilterStream filtered = new DistanceFilterStream(stream);
+			DistanceFilterStream filtered = new DistanceFilterStream(stream, distance);
 			AudioInputStream f = new AudioInputStream(filtered,format,stream.getFrameLength());
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
 			
