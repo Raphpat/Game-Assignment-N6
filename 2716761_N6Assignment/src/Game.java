@@ -101,6 +101,7 @@ public class Game extends GameCore {
 	public void initialiseGame() {
 		gameEnd = false;
 		debug = false;
+		player.resetShots();
 
 		setSize(screenWidth, screenHeight);
 
@@ -496,7 +497,7 @@ public class Game extends GameCore {
 				if (!player.isReloading()) {
 					Point p = MouseInfo.getPointerInfo().getLocation();
 					double angle = Math.atan2(player.getY() - (p.y - yo), player.getX() - (p.x - xo)) + Math.PI;
-					Velocity v = new Velocity(0.5, angle);
+					Velocity v = new Velocity(0.3, angle);
 					projectiles.add(new Projectile(player.getX(), player.getY(), v));
 					if(!debug) {
 						player.incrementShot();

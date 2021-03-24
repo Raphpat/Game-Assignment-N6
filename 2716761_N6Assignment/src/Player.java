@@ -38,6 +38,12 @@ public class Player extends Sprite {
 		}
 	}
 	
+	public void resetShots() {
+		shots = MAX_SHOTS;
+		reloading = false;
+		reloadTime = 0;
+	}
+	
 	/**
 	 * @return total reload time of the player, in miliseconds
 	 */
