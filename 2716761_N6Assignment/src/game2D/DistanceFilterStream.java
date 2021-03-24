@@ -34,12 +34,14 @@ public class DistanceFilterStream extends FilterInputStream {
 	public int read(byte[] sample, int offset, int length) throws IOException {
 		// Get the number of bytes in the data stream
 		int bytesRead = super.read(sample, offset, length);
-		// Make sure you don't divide by 0
+		// TODO tune how distance affects sound here, the smaller the distance the louder the sound.
+		distance /= 5;
+		// Make sure that no sound is less than one so that the later divsion doesn't increase the volume
 		if(distance < 1) {
 			distance = 1;
 		}
 		// Modify the volume by the distance
-		float volume = (float) (1.0f / distance * 10); // TODO tune
+		float volume = (float) (1.0f / distance);
 		short amp = 0;
 
 		// Loop through the sample 2 bytes at a time

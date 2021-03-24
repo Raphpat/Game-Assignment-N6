@@ -6,7 +6,7 @@ public class Sound extends Thread {
 
 	String filename;	// The name of the file to play
 	boolean finished;	// A flag showing that the thread has finished
-	private double distance;
+	private double distance = 0; // 0 by default
 	
 	public Sound(String fname) {
 		filename = fname;
