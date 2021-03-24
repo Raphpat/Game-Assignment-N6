@@ -485,7 +485,7 @@ public class Game extends GameCore {
 
 			// Then check for any collisions that may have occurred
 			for (Sprite s : enemy) {
-				if (s.isVisible() && boundingCircleCollision(player, s)) {
+				if (!debug && s.isVisible() && boundingCircleCollision(player, s)) {
 					JOptionPane.showMessageDialog(null, "Try Again!");
 					initialiseGame();
 				}
