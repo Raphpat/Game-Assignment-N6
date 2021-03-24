@@ -435,8 +435,8 @@ public class Game extends GameCore {
 					g.drawImage(loadImage("images/AppleSingle.png"), 30 + i * 20, 70, null);
 				}
 			}
-			
-			for(int i = player.getHealth(); i > 0; i--) {
+
+			for (int i = player.getHealth(); i > 0; i--) {
 				g.drawImage(loadImage("images/heart.png"), 10 + i * 20, 90, null);
 			}
 
@@ -491,7 +491,8 @@ public class Game extends GameCore {
 					rock.update(elapsed);
 					if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
 						rock.stop();
-						rock.destroy(elapsed);
+						rock.destroy(elapsed, Math.sqrt(
+								Math.pow(rock.getX() - player.getX(), 2) + Math.pow(rock.getY() - player.getY(), 2)));
 					}
 
 					if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
@@ -507,7 +508,8 @@ public class Game extends GameCore {
 					rock.update(elapsed);
 					if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
 						rock.stop();
-						rock.destroy(elapsed);
+						rock.destroy(elapsed, Math.sqrt(
+								Math.pow(rock.getX() - player.getX(), 2) + Math.pow(rock.getY() - player.getY(), 2)));
 					}
 
 					if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
@@ -541,7 +543,8 @@ public class Game extends GameCore {
 						proj.shiftY(proj.getVelocityY() * 100);
 						proj.stop();
 
-						proj.destroy(elapsed);
+						proj.destroy(elapsed, Math.sqrt(
+								Math.pow(proj.getX() - player.getX(), 2) + Math.pow(proj.getY() - player.getY(), 2)));
 					}
 					if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
 						projectiles.remove(proj);
@@ -557,12 +560,13 @@ public class Game extends GameCore {
 					proj.shiftY(proj.getVelocityY() * 100);
 					proj.stop();
 
-					proj.destroy(elapsed);
-					
+					proj.destroy(elapsed, Math.sqrt(
+							Math.pow(proj.getX() - player.getX(), 2) + Math.pow(proj.getY() - player.getY(), 2)));
+
 					if (!debug) {
 						// Remove one HP
 						player.hit();
-						if(player.getHealth() <= 0) {
+						if (player.getHealth() <= 0) {
 							JOptionPane.showMessageDialog(null, "Try Again!");
 							initialiseGame();
 						}

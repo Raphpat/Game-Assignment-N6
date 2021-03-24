@@ -52,9 +52,10 @@ public class Projectile extends Sprite {
 		super();
 	}
 
-	public void destroy(long elapsed) {
+	public void destroy(long elapsed, double dist) {
 		Animation anim = new Animation();
 		anim.loadAnimationFromSheet(explodingImage, 7, 1, explosionTimePerFrame);
+		sound.setDistance(dist);
 		sound.start();
 
 		setAnimation(anim);
