@@ -10,7 +10,7 @@ import javax.swing.*;
 
 
 /**
- * @author David Cairns
+ * @author 2716761
  * 
  * Core Game class that implements default game loop. Subclasses should
  * implement the draw() method and override the update method.

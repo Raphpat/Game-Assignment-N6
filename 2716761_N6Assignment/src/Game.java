@@ -17,7 +17,7 @@ import game2D.*;
 // override this with your own event handler.
 
 /**
- * @author David Cairns
+ * @author 2716761
  *
  */
 @SuppressWarnings("serial")
@@ -74,7 +74,6 @@ public class Game extends GameCore {
 	 * register event handlers
 	 */
 	public void init() {
-//		Sprite s; // Temporary reference to a sprite
 
 		// Initialise the player with an animation
 		player = new Player();
@@ -103,6 +102,7 @@ public class Game extends GameCore {
 		player.resetShots();
 		player.healMax();
 
+		setTitle("Knight Splat: " + level);
 		setSize(screenWidth, screenHeight);
 
 		// The following is just positionning of sprites, skip to line ~ 290

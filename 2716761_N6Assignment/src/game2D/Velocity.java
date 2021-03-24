@@ -8,7 +8,7 @@ package game2D;
 	queries are achieved using the methods 'getdx' and 'getdy'.
 	respectively.
 	
-	@author David Cairns
+	@author 2716761
 */
 public class Velocity {
 

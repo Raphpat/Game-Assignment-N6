@@ -1,6 +1,13 @@
 import game2D.Animation;
 import game2D.Sprite;
 
+/**
+ * The Player class represents the player and handles the player's shooting,
+ * reload and health
+ * 
+ * @author 2716761
+ *
+ */
 public class Player extends Sprite {
 
 	private static String playerImage = "images/characterSheet.png";
@@ -12,7 +19,7 @@ public class Player extends Sprite {
 	private long reloadTime = 0;
 	private boolean reloading = false;
 	private Animation anim = new Animation();
-	
+
 	private int health = MAX_HEALTH;
 
 	public Player() {
@@ -40,7 +47,7 @@ public class Player extends Sprite {
 			shots--;
 		}
 	}
-	
+
 	/**
 	 * Reset the shots, refill the clip and put the counter back to 0
 	 */
@@ -49,14 +56,14 @@ public class Player extends Sprite {
 		reloading = false;
 		reloadTime = 0;
 	}
-	
+
 	/**
 	 * @return total reload time of the player, in miliseconds
 	 */
 	public int getReload() {
 		return reload;
 	}
-	
+
 	/**
 	 * @return how far into the reload the player is
 	 */
@@ -77,30 +84,30 @@ public class Player extends Sprite {
 	public void setReloading(boolean reloading) {
 		this.reloading = reloading;
 	}
-	
+
 	/**
 	 * Remove one HP of the player
 	 */
 	public void hit() {
-		health --;
+		health--;
 	}
-	
+
 	/**
 	 * Add one HP to the player
 	 */
 	public void heal() {
-		if(health < MAX_HEALTH) {
-			health ++;
+		if (health < MAX_HEALTH) {
+			health++;
 		}
 	}
-	
+
 	/**
 	 * Restore the player to full HP
 	 */
 	public void healMax() {
 		health = MAX_HEALTH;
 	}
-	
+
 	/**
 	 * @return the current HP of the player
 	 */
@@ -112,7 +119,7 @@ public class Player extends Sprite {
 		super.update(elapsedTime);
 		if (reloading) {
 			reloadTime += elapsedTime;
-		} 
+		}
 		// Allow shooting again
 		if (reloadTime >= reload) {
 			reloading = false;

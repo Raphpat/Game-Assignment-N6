@@ -1,6 +1,12 @@
 import game2D.Animation;
 import game2D.Sprite;
 
+/**
+ * The Mage class represents the enemies in the game
+ * 
+ * @author 2716761
+ *
+ */
 public class Mage extends Sprite {
 
 	private static String playerImage = "images/mageSheet.png";
