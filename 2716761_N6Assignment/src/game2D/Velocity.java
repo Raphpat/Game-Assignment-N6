@@ -34,14 +34,14 @@ public class Velocity {
 
 	/**
 		Initialise a default velocity with a speed of 's' and an
-		angle of 'a' degrees.
+		angle of 'a' radians.
 	*/
 	public Velocity(double s, double a)
 	{
 		dx = 0.0f;
 		dy = 0.0f;
 		speed = s;
-		dangle = a;
+		angle = a;
 		reCalc();
 	}
 
@@ -52,8 +52,6 @@ public class Velocity {
 	*/
 	private void reCalc()
 	{
-		// Get the value of the angle in radians
-		angle = Math.toRadians(dangle);
 		// Work out the change in pixels/millisecond in x direction
 		dx = speed * Math.cos(angle);
 		// Work out the change in pixels/millisecond in y direction
@@ -62,13 +60,13 @@ public class Velocity {
 
 	/**
 		Similar to the constructor. Set the velocity
-		to a speed of 's' and an angle of 'a' degrees.
+		to a speed of 's' and an angle of 'a' radians.
 	*/
 	public void setVelocity(double s, double a)
 	{
 		speed = s;
-		dangle = a;
-		angle = Math.toRadians(a);
+		angle = a;
+		dangle = Math.toDegrees(a);
 		reCalc();
 	}
 

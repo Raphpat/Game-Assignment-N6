@@ -2,12 +2,9 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
-
-import java.awt.*;
 
 import game2D.*;
 
@@ -498,7 +495,9 @@ public class Game extends GameCore {
 			if (key == KeyEvent.VK_SPACE) {
 				if (!player.isReloading()) {
 					Point p = MouseInfo.getPointerInfo().getLocation();
-					projectiles.add(new Projectile(player.getX(), player.getY(), p.x - xo, p.y - yo));
+					double angle = Math.atan2(player.getY() - (p.y - yo), player.getX() - (p.x - xo)) + Math.PI;
+					Velocity v = new Velocity(0.5, angle);
+					projectiles.add(new Projectile(player.getX(), player.getY(), v));
 					if(!debug) {
 						player.incrementShot();
 					}

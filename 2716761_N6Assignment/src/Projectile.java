@@ -1,5 +1,3 @@
-import javax.swing.ImageIcon;
-
 import game2D.*;
 
 /**
@@ -28,7 +26,7 @@ public class Projectile extends Sprite {
 	 * @param tx target position
 	 * @param ty target position
 	 */
-	public Projectile(float x, float y, int tx, int ty) {
+	public Projectile(float x, float y, Velocity v) {
 		super();
 		exploding = false;
 		sound = new Sound(soundFile);
@@ -43,8 +41,9 @@ public class Projectile extends Sprite {
 		//setScale(0.5f);
 		setPosition(x, y);
 		//setRotation(45);
-		setVelocityX((tx - x) / 1000);
-		setVelocityY((ty - y) / 1000);
+		System.out.println("Dx: " + v.getdx() + " Dy: " + v.getdy());
+		setVelocityX((float) v.getdx());
+		setVelocityY((float) v.getdy());
 	}
 
 	/**
