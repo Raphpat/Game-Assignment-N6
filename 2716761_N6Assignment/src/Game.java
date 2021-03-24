@@ -521,6 +521,7 @@ public class Game extends GameCore {
 			for (Mage s : enemy) {
 				// Check for tile collisions between enemies and player
 				if (!debug && s.isVisible() && boundingCircleCollision(player, s)) {
+					new Sound("sounds/dead.wav").start();
 					JOptionPane.showMessageDialog(null, "Try Again!");
 					initialiseGame();
 				}
@@ -566,9 +567,13 @@ public class Game extends GameCore {
 					if (!debug) {
 						// Remove one HP
 						player.hit();
+						
 						if (player.getHealth() <= 0) {
+							new Sound("sounds/dead.wav").start();
 							JOptionPane.showMessageDialog(null, "Try Again!");
 							initialiseGame();
+						} else {
+							new Sound("sounds/hit.wav").start();
 						}
 					}
 				}
