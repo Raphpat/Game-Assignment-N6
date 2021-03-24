@@ -48,7 +48,7 @@ public class Game extends GameCore {
 	Animation end;
 
 	Player player = null;
-	Sprite[] enemy = null;
+	Mage[] enemy = null;
 	Sprite cup = null;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
@@ -79,12 +79,10 @@ public class Game extends GameCore {
 		player = new Player();
 		player.setMaxVelocity(0.2f);
 
-		enemy = new Sprite[14];
+		// Create the enemies
+		enemy = new Mage[14];
 		for (int i = 0; i < enemy.length; i++) {
-			// Temporary enemy stuff
-			mage = new Animation();
-			mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
-			enemy[i] = new Sprite(mage);
+			enemy[i] = new Mage();
 		}
 
 		end = new Animation();
