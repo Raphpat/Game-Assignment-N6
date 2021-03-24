@@ -51,6 +51,7 @@ public class Game extends GameCore {
 	Mage[] enemy = null;
 	Sprite cup = null;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+	ArrayList<Projectile> enemyProjectiles = new ArrayList<Projectile>();
 
 	TileMap tmap = new TileMap(); // Our tile map, note that we load it in initialiseGame()
 
@@ -100,8 +101,11 @@ public class Game extends GameCore {
 		gameEnd = false;
 		debug = false;
 		player.resetShots();
+		player.healMax();
 
 		setSize(screenWidth, screenHeight);
+
+		// The following is just positionning of sprites, skip to line ~ 290
 
 		if (level.equals("level 1")) {
 			tmap.loadMap("maps", "level1.txt");
@@ -372,7 +376,7 @@ public class Game extends GameCore {
 			player.draw(g);
 
 			// Draw the enemies
-			for (Sprite s : enemy) {
+			for (Mage s : enemy) {
 				s.setOffsets(xo, yo);
 				s.draw(g);
 			}
@@ -390,13 +394,23 @@ public class Game extends GameCore {
 				}
 			}
 
+			if (!enemyProjectiles.isEmpty()) {
+				for (int i = 0; i < enemyProjectiles.size(); i++) {
+					Projectile rock = enemyProjectiles.get(i);
+
+					// Apply offsets to the projectiles and draw
+					rock.setOffsets(xo, yo);
+					rock.drawTransformed(g);
+				}
+			}
+
 			// If the debugging is on, then draw the bounding boxes and circles
 			if (debug) {
 				g.setColor(Color.BLACK);
 				player.drawBoundingBox(g);
 				player.drawBoundingCircle(g);
 
-				for (Sprite s : enemy) {
+				for (Mage s : enemy) {
 					s.drawBoundingBox(g);
 					s.drawBoundingCircle(g);
 				}
@@ -420,6 +434,10 @@ public class Game extends GameCore {
 				for (int i = 0; i < player.getShots(); i++) {
 					g.drawImage(loadImage("images/AppleSingle.png"), 30 + i * 20, 70, null);
 				}
+			}
+			
+			for(int i = player.getHealth(); i > 0; i--) {
+				g.drawImage(loadImage("images/heart.png"), 10 + i * 20, 90, null);
 			}
 
 		}
@@ -466,6 +484,7 @@ public class Game extends GameCore {
 
 			cup.update(elapsed);
 
+			// Tilemap collisions for projectiles
 			if (!projectiles.isEmpty()) {
 				for (int i = 0; i < projectiles.size(); i++) {
 					Projectile rock = projectiles.get(i);
@@ -481,17 +500,40 @@ public class Game extends GameCore {
 				}
 			}
 
-			// Then check for any collisions that may have occurred
-			for (Sprite s : enemy) {
+			// Tilemap collisions for enemy projectiles
+			if (!enemyProjectiles.isEmpty()) {
+				for (int i = 0; i < enemyProjectiles.size(); i++) {
+					Projectile rock = enemyProjectiles.get(i);
+					rock.update(elapsed);
+					if (!rock.isExploding() && checkTileCollision(rock, tmap)) {
+						rock.stop();
+						rock.destroy(elapsed);
+					}
+
+					if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
+						enemyProjectiles.remove(i);
+					}
+				}
+			}
+
+			for (Mage s : enemy) {
+				// Check for tile collisions between enemies and player
 				if (!debug && s.isVisible() && boundingCircleCollision(player, s)) {
 					JOptionPane.showMessageDialog(null, "Try Again!");
 					initialiseGame();
+				}
+				// The enemies can shoot
+				if (!s.isReloading()) {
+					double angle = Math.atan2(s.getY() - player.getY(), s.getX() - player.getX()) + Math.PI;
+					Velocity v = new Velocity(0.3, angle);
+					enemyProjectiles.add(new Projectile(s.getX(), s.getY(), v));
+					s.setReloading(true);
 				}
 			}
 
 			// Check for hits from projectiles onto the enemy sprite
 			for (Projectile proj : projectiles) {
-				for (Sprite s : enemy) {
+				for (Mage s : enemy) {
 					if (s.isVisible() && !proj.isExploding() && boundingCircleCollision(proj, s)) {
 						// Move the projectile into the sprite a bit more before stopping it
 						s.hide();
@@ -507,6 +549,31 @@ public class Game extends GameCore {
 				}
 			}
 
+			// Check for hits from enemy projectiles onto the player sprite
+			for (Projectile proj : enemyProjectiles) {
+				if (!proj.isExploding() && boundingCircleCollision(proj, player)) {
+					// Move the projectile into the sprite a bit more before stopping it
+					proj.shiftX(proj.getVelocityX() * 100);
+					proj.shiftY(proj.getVelocityY() * 100);
+					proj.stop();
+
+					proj.destroy(elapsed);
+					
+					if (!debug) {
+						// Remove one HP
+						player.hit();
+						if(player.getHealth() <= 0) {
+							JOptionPane.showMessageDialog(null, "Try Again!");
+							initialiseGame();
+						}
+					}
+				}
+				if (proj.isExploding() && proj.getExplodingTime() >= 7 * proj.getExplosionTimePerFrame()) {
+					enemyProjectiles.remove(proj);
+				}
+			}
+
+			// Check all the player and enemies tile collisions
 			if (checkTileCollision(player, tmap)) {
 				// Move the sprite out of the block
 				if (player.getVelocityX() > 0) {
@@ -523,7 +590,7 @@ public class Game extends GameCore {
 				player.stop();
 			}
 
-			for (Sprite s : enemy) {
+			for (Mage s : enemy) {
 				if (checkTileCollision(s, tmap)) {
 					// Move the sprite out of the block
 					if (s.getVelocityX() > 0) {
@@ -591,7 +658,6 @@ public class Game extends GameCore {
 						player.incrementShot();
 					}
 				}
-
 			}
 
 			if (key == KeyEvent.VK_COMMA) {

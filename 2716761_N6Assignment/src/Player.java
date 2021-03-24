@@ -5,12 +5,15 @@ public class Player extends Sprite {
 
 	private static String playerImage = "images/characterSheet.png";
 	private static int MAX_SHOTS = 5;
+	private static int MAX_HEALTH = 3;
 
 	private int shots = MAX_SHOTS;
 	private int reload = 5000;
 	private long reloadTime = 0;
 	private boolean reloading = false;
 	private Animation anim = new Animation();
+	
+	private int health = MAX_HEALTH;
 
 	public Player() {
 		super();
@@ -73,6 +76,36 @@ public class Player extends Sprite {
 	 */
 	public void setReloading(boolean reloading) {
 		this.reloading = reloading;
+	}
+	
+	/**
+	 * Remove one HP of the player
+	 */
+	public void hit() {
+		health --;
+	}
+	
+	/**
+	 * Add one HP to the player
+	 */
+	public void heal() {
+		if(health < MAX_HEALTH) {
+			health ++;
+		}
+	}
+	
+	/**
+	 * Restore the player to full HP
+	 */
+	public void healMax() {
+		health = MAX_HEALTH;
+	}
+	
+	/**
+	 * @return the current HP of the player
+	 */
+	public int getHealth() {
+		return health;
 	}
 
 	public void update(long elapsedTime) {
