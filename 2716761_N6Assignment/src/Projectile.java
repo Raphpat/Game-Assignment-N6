@@ -41,7 +41,6 @@ public class Projectile extends Sprite {
 		//setScale(0.5f);
 		setPosition(x, y);
 		//setRotation(45);
-		System.out.println("Dx: " + v.getdx() + " Dy: " + v.getdy());
 		setVelocityX((float) v.getdx());
 		setVelocityY((float) v.getdy());
 	}
