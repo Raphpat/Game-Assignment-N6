@@ -79,8 +79,8 @@ public class Game extends GameCore {
 		player = new Player();
 		player.setMaxVelocity(0.2f);
 
-		enemy = new Sprite[9];
-		for(int i = 0; i < enemy.length; i++) {
+		enemy = new Sprite[14];
+		for (int i = 0; i < enemy.length; i++) {
 			// Temporary enemy stuff
 			mage = new Animation();
 			mage.loadAnimationFromSheet("images/mageSheet.png", 4, 1, 100);
@@ -133,13 +133,13 @@ public class Game extends GameCore {
 			enemy[2].setVelocityX(0.1f);
 			enemy[2].setVelocityY(0);
 			enemy[2].show();
-			
+
 			enemy[3].setX(832);
 			enemy[3].setY(192);
 			enemy[3].setVelocityX(0.1f);
 			enemy[3].setVelocityY(0);
 			enemy[3].show();
-			
+
 			enemy[4].setX(1216);
 			enemy[4].setY(288);
 			enemy[4].setVelocityX(0);
@@ -163,13 +163,19 @@ public class Game extends GameCore {
 			enemy[7].setVelocityX(0.1f);
 			enemy[7].setVelocityY(0);
 			enemy[7].show();
-			
+
 			enemy[8].setX(1344);
 			enemy[8].setY(672);
 			enemy[8].setVelocityX(0);
 			enemy[8].setVelocityY(0.1f);
 			enemy[8].show();
-			
+
+			enemy[9].hide();
+			enemy[10].hide();
+			enemy[11].hide();
+			enemy[12].hide();
+			enemy[13].hide();
+
 			cup.setX(1000);
 			cup.setY(200);
 			cup.setVelocityX(0);
@@ -185,7 +191,91 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
-			
+
+			enemy[0].setX(96);
+			enemy[0].setY(64);
+			enemy[0].setVelocityX(0);
+			enemy[0].setVelocityY(0.1f);
+			enemy[0].show();
+
+			enemy[1].setX(256);
+			enemy[1].setY(128);
+			enemy[1].setVelocityX(0);
+			enemy[1].setVelocityY(0.1f);
+			enemy[1].show();
+
+			enemy[2].setX(544);
+			enemy[2].setY(96);
+			enemy[2].setVelocityX(0.1f);
+			enemy[2].setVelocityY(0);
+			enemy[2].show();
+
+			enemy[3].setX(256);
+			enemy[3].setY(288);
+			enemy[3].setVelocityX(0);
+			enemy[3].setVelocityY(0.1f);
+			enemy[3].show();
+
+			enemy[4].setX(256);
+			enemy[4].setY(416);
+			enemy[4].setVelocityX(0);
+			enemy[4].setVelocityY(0.1f);
+			enemy[4].show();
+
+			enemy[5].setX(704);
+			enemy[5].setY(96);
+			enemy[5].setVelocityX(0);
+			enemy[5].setVelocityY(0.1f);
+			enemy[5].show();
+
+			enemy[6].setX(960);
+			enemy[6].setY(256);
+			enemy[6].setVelocityX(0.1f);
+			enemy[6].setVelocityY(0);
+			enemy[6].show();
+
+			enemy[7].setX(1120);
+			enemy[7].setY(192);
+			enemy[7].setVelocityX(0);
+			enemy[7].setVelocityY(0.1f);
+			enemy[7].show();
+
+			enemy[8].setX(1216);
+			enemy[8].setY(384);
+			enemy[8].setVelocityX(0.1f);
+			enemy[8].setVelocityY(0);
+			enemy[8].show();
+
+			enemy[9].setX(1504);
+			enemy[9].setY(320);
+			enemy[9].setVelocityX(0.1f);
+			enemy[9].setVelocityY(0);
+			enemy[9].show();
+
+			enemy[10].setX(1792);
+			enemy[10].setY(160);
+			enemy[10].setVelocityX(0.1f);
+			enemy[10].setVelocityY(0);
+			enemy[10].show();
+
+			enemy[11].setX(1792);
+			enemy[11].setY(416);
+			enemy[11].setVelocityX(0.1f);
+			enemy[11].setVelocityY(0);
+			enemy[11].show();
+
+			enemy[12].setX(2336);
+			enemy[12].setY(416);
+			enemy[12].setVelocityX(0);
+			enemy[12].setVelocityY(0.1f);
+			enemy[12].show();
+
+			enemy[13].setX(2336);
+			enemy[13].setY(192);
+			enemy[13].setVelocityX(0);
+			enemy[13].setVelocityY(0.1f);
+			enemy[13].show();
+
 			setVisible(true);
 		} else if (level.equals("menu")) {
 
@@ -421,14 +511,14 @@ public class Game extends GameCore {
 
 			if (checkTileCollision(player, tmap)) {
 				// Move the sprite out of the block
-				if(player.getVelocityX() > 0) {
+				if (player.getVelocityX() > 0) {
 					player.shiftX(-2);
-				} else if(player.getVelocityX() < 0) {
+				} else if (player.getVelocityX() < 0) {
 					player.shiftX(2);
 				}
-				if(player.getVelocityY() > 0) {
+				if (player.getVelocityY() > 0) {
 					player.shiftY(-2);
-				} else if(player.getVelocityY() < 0) {
+				} else if (player.getVelocityY() < 0) {
 					player.shiftY(2);
 				}
 				// TODO fix the glitching through walls
@@ -438,14 +528,14 @@ public class Game extends GameCore {
 			for (Sprite s : enemy) {
 				if (checkTileCollision(s, tmap)) {
 					// Move the sprite out of the block
-					if(s.getVelocityX() > 0) {
+					if (s.getVelocityX() > 0) {
 						s.shiftX(-1);
-					} else if(s.getVelocityX() < 0) {
+					} else if (s.getVelocityX() < 0) {
 						s.shiftX(1);
 					}
-					if(s.getVelocityY() > 0) {
+					if (s.getVelocityY() > 0) {
 						s.shiftY(-1);
-					} else if(s.getVelocityY() < 0) {
+					} else if (s.getVelocityY() < 0) {
 						s.shiftY(1);
 					}
 					// TODO fix the glitching through walls
@@ -499,7 +589,7 @@ public class Game extends GameCore {
 					double angle = Math.atan2(player.getY() - (p.y - yo), player.getX() - (p.x - xo)) + Math.PI;
 					Velocity v = new Velocity(0.3, angle);
 					projectiles.add(new Projectile(player.getX(), player.getY(), v));
-					if(!debug) {
+					if (!debug) {
 						player.incrementShot();
 					}
 				}
@@ -740,7 +830,6 @@ public class Game extends GameCore {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 }
