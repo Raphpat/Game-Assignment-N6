@@ -38,6 +38,9 @@ public class Player extends Sprite {
 		}
 	}
 	
+	/**
+	 * Reset the shots, refill the clip and put the counter back to 0
+	 */
 	public void resetShots() {
 		shots = MAX_SHOTS;
 		reloading = false;
