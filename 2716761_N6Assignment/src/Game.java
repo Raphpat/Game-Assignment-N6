@@ -182,6 +182,12 @@ public class Game extends GameCore {
 		} else if (level.equals("level 2")) {
 			tmap.loadMap("maps", "level2.txt");
 
+			player.setX(1312);
+			player.setY(96);
+			player.setVelocityX(0);
+			player.setVelocityY(0);
+			player.show();
+			
 			setVisible(true);
 		} else if (level.equals("menu")) {
 
