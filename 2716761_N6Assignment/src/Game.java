@@ -730,12 +730,6 @@ public class Game extends GameCore {
 				debug = !debug;
 				System.out.println("Debug is now " + debug);
 			}
-
-			if (key == KeyEvent.VK_S) {
-				// Example of playing a sound as a thread
-				Sound s = new Sound("sounds/caw.wav");
-				s.start();
-			}
 		}
 	}
 
