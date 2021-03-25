@@ -340,15 +340,8 @@ public class Game extends GameCore {
 				yo = -((int) player.getY()) + (screenHeight / 2);
 			}
 		}
-
-		g.setColor(Color.white);
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		// Apply offsets to sprites then draw them
-//		for (Sprite s : clouds) {
-//			s.setOffsets(xo, yo);
-//			s.draw(g);
-//		}
+		
+		g.drawImage(loadImage("images/Nebula Blue.png"), xo/2, yo/2, null);
 
 		/**
 		 * Draw differently based on the level
@@ -406,7 +399,7 @@ public class Game extends GameCore {
 
 			// If the debugging is on, then draw the bounding boxes and circles
 			if (debug) {
-				g.setColor(Color.BLACK);
+				g.setColor(Color.white);
 				player.drawBoundingBox(g);
 				player.drawBoundingCircle(g);
 
@@ -427,7 +420,7 @@ public class Game extends GameCore {
 			if (player.isReloading()) {
 				// Show reloading info
 				String msg = String.format("Relaoding: %d", player.getReload() - player.getReloadTime());
-				g.setColor(Color.darkGray);
+				g.setColor(Color.white);
 				g.drawString(msg, 20, 70);
 			} else {
 				// Draw an apple per reamining apple in the clip
@@ -528,7 +521,7 @@ public class Game extends GameCore {
 				// The enemies can shoot
 				if (s.isVisible() && !s.isReloading()) {
 					double angle = Math.atan2(s.getY() - player.getY(), s.getX() - player.getX()) + Math.PI;
-					Velocity v = new Velocity(0.3, angle);
+					Velocity v = new Velocity(0.2, angle);
 					enemyProjectiles.add(new Projectile(s.getX(), s.getY(), v));
 					s.setReloading(true);
 				}
@@ -636,23 +629,23 @@ public class Game extends GameCore {
 				level = "menu";
 				initialiseGame();
 			}
-			if (key == KeyEvent.VK_UP)
+			if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W)
 				// Compare negative velocity Y because when going up velocity Y is negative
 				if (-player.getVelocityY() < player.getMaxVelocity())
 					player.setVelocityY(player.getVelocityY() - 0.01f);
 
-			if (key == KeyEvent.VK_DOWN) {
+			if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
 				if (player.getVelocityY() < player.getMaxVelocity())
 					player.setVelocityY(player.getVelocityY() + 0.01f);
 			}
 
-			if (key == KeyEvent.VK_LEFT) {
+			if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
 				// Compare negative velocity X because when going left velocity X is negative
 				if (-player.getVelocityX() < player.getMaxVelocity())
 					player.setVelocityX(player.getVelocityX() - 0.01f);
 			}
 
-			if (key == KeyEvent.VK_RIGHT) {
+			if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
 				if (-player.getVelocityY() < player.getMaxVelocity())
 					player.setVelocityX(player.getVelocityX() + 0.01f);
 			}
@@ -738,7 +731,7 @@ public class Game extends GameCore {
 		if (ch != '.') // If it's not a dot (empty space), handle it
 		{
 			// Check for the cup
-			if (ch == 'e') {
+			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
 				tmap.setTileChar('.', xtile, ytile);
 				cup.setPosition(sx, sy);
 				cup.show();
@@ -760,7 +753,7 @@ public class Game extends GameCore {
 		// If it's not empty space
 		if (ch != '.') {
 			// Check for the cup
-			if (ch == 'e') {
+			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
 				tmap.setTileChar('.', xtile, ytile);
 				cup.setPosition(sx, sy);
 				cup.show();
@@ -781,7 +774,7 @@ public class Game extends GameCore {
 		// If it's not empty space
 		if (ch != '.') {
 			// Check for the cup
-			if (ch == 'e') {
+			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
 				tmap.setTileChar('.', xtile, ytile);
 				cup.setPosition(sx, sy);
 				cup.show();
@@ -802,7 +795,7 @@ public class Game extends GameCore {
 		// If it's not empty space
 		if (ch != '.') {
 			// Check for the cup
-			if (ch == 'e') {
+			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
 				tmap.setTileChar('.', xtile, ytile);
 				cup.setPosition(sx, sy);
 				cup.show();
