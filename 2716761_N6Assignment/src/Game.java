@@ -110,18 +110,6 @@ public class Game extends GameCore {
 		player.resetShots();
 		player.healMax();
 		
-		if(!projectiles.isEmpty()) {
-			for(Projectile proj : projectiles) {
-				projectiles.remove(proj);
-			}
-		}
-
-		if(!enemyProjectiles.isEmpty()) {
-			for(Projectile proj : enemyProjectiles) {
-				enemyProjectiles.remove(proj);
-			}
-		}
-		
 		setTitle("Knight Splat: " + level);
 		setSize(screenWidth, screenHeight);
 
