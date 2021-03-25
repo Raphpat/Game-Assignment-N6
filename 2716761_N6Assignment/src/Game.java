@@ -109,7 +109,19 @@ public class Game extends GameCore {
 		debug = false;
 		player.resetShots();
 		player.healMax();
+		
+		if(!projectiles.isEmpty()) {
+			for(Projectile proj : projectiles) {
+				projectiles.remove(proj);
+			}
+		}
 
+		if(!enemyProjectiles.isEmpty()) {
+			for(Projectile proj : enemyProjectiles) {
+				enemyProjectiles.remove(proj);
+			}
+		}
+		
 		setTitle("Knight Splat: " + level);
 		setSize(screenWidth, screenHeight);
 
@@ -532,6 +544,9 @@ public class Game extends GameCore {
 				player.setPosition(player.getPreviousX(), player.getPreviousY());
 				player.stop();
 			}
+			
+			
+			
 			player.update(elapsed);
 
 			for (Sprite s : enemy) {
