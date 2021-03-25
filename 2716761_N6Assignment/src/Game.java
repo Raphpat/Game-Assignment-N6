@@ -44,12 +44,12 @@ public class Game extends GameCore {
 	Color colour2 = Color.black;
 
 	// Game resources
-	Animation mage;
 	Animation end;
 
 	Player player = null;
 	Mage[] enemy = null;
 	Sprite cup = null;
+	Sprite[] heart = null;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	ArrayList<Projectile> enemyProjectiles = new ArrayList<Projectile>();
 
@@ -85,6 +85,13 @@ public class Game extends GameCore {
 			enemy[i] = new Mage();
 		}
 
+		heart = new Sprite[3];
+		for (int i = 0; i < heart.length; i++) {
+			Animation anim = new Animation();
+			anim.addFrame(loadImage("images/heart.png"), 500);
+			heart[i] = new Sprite(anim);
+		}
+
 		end = new Animation();
 		end.loadAnimationFromSheet("images/end (Pressed) (64x64).png", 8, 1, 100);
 		cup = new Sprite(end);
@@ -117,6 +124,24 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+
+			heart[0].setX(584);
+			heart[0].setY(544);
+			heart[0].setVelocityX(0);
+			heart[0].setVelocityY(0);
+			heart[0].show();
+
+			heart[1].setX(1096);
+			heart[1].setY(448);
+			heart[1].setVelocityX(0);
+			heart[1].setVelocityY(0);
+			heart[1].show();
+
+			heart[2].setX(1992);
+			heart[2].setY(160);
+			heart[2].setVelocityX(0);
+			heart[2].setVelocityY(0);
+			heart[2].show();
 
 			enemy[0].setX(576);
 			enemy[0].setY(160);
@@ -193,6 +218,24 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+
+			heart[0].setX(2216);
+			heart[0].setY(390);
+			heart[0].setVelocityX(0);
+			heart[0].setVelocityY(0);
+			heart[0].show();
+
+			heart[1].setX(488);
+			heart[1].setY(420);
+			heart[1].setVelocityX(0);
+			heart[1].setVelocityY(0);
+			heart[1].show();
+
+			heart[2].setX(360);
+			heart[2].setY(230);
+			heart[2].setVelocityX(0);
+			heart[2].setVelocityY(0);
+			heart[2].show();
 
 			enemy[0].setX(96);
 			enemy[0].setY(64);
@@ -340,8 +383,8 @@ public class Game extends GameCore {
 				yo = -((int) player.getY()) + (screenHeight / 2);
 			}
 		}
-		
-		g.drawImage(loadImage("images/Nebula Blue.png"), xo/2, yo/2, null);
+
+		g.drawImage(loadImage("images/Nebula Blue.png"), xo / 2, yo / 2, null);
 
 		/**
 		 * Draw differently based on the level
@@ -374,6 +417,13 @@ public class Game extends GameCore {
 				s.draw(g);
 			}
 
+			// Draw the hearts
+			for (Sprite s : heart) {
+				s.setOffsets(xo, yo);
+				s.draw(g);
+			}
+
+			// Draw the victory cup
 			cup.setOffsets(xo, yo);
 			cup.draw(g);
 
@@ -408,6 +458,9 @@ public class Game extends GameCore {
 					s.drawBoundingCircle(g);
 				}
 
+				cup.drawBoundingBox(g);
+				cup.drawBoundingCircle(g);
+				
 				for (Projectile proj : projectiles) {
 					proj.drawBoundingBox(g);
 					proj.drawBoundingCircle(g);
@@ -447,10 +500,6 @@ public class Game extends GameCore {
 			player.update(elapsed);
 			player.stop();
 
-			for (Sprite s : enemy) {
-				s.update(elapsed);
-			}
-
 			cup.update(elapsed);
 
 			gameEndTime += elapsed;
@@ -474,6 +523,10 @@ public class Game extends GameCore {
 			for (Sprite s : enemy) {
 				s.update(elapsed);
 			}
+			
+			for (Sprite s : heart) {
+				s.update(elapsed);
+			}
 
 			cup.update(elapsed);
 
@@ -490,6 +543,15 @@ public class Game extends GameCore {
 
 					if (rock.isExploding() && rock.getExplodingTime() >= 7 * rock.getExplosionTimePerFrame()) {
 						projectiles.remove(i);
+					}
+				}
+			}
+			
+			for (Sprite s : heart) {
+				if(s.isVisible() && boundingBoxCollision(player, s)) {
+					if(player.getHealth() < player.getMaxHealth()) {
+						s.hide();
+						player.heal();
 					}
 				}
 			}
@@ -516,6 +578,7 @@ public class Game extends GameCore {
 				if (!debug && s.isVisible() && boundingCircleCollision(player, s)) {
 					new Sound("sounds/dead.wav").start();
 					JOptionPane.showMessageDialog(null, "Try Again!");
+					level = "menu";
 					initialiseGame();
 				}
 				// The enemies can shoot
@@ -554,16 +617,17 @@ public class Game extends GameCore {
 					proj.shiftY(proj.getVelocityY() * 100);
 					proj.stop();
 
-					proj.destroy(elapsed, Math.sqrt(
-							Math.pow(proj.getX() - player.getX(), 2) + Math.pow(proj.getY() - player.getY(), 2)));
+					proj.destroy(elapsed, Math
+							.sqrt(Math.pow(proj.getX() - player.getX(), 2) + Math.pow(proj.getY() - player.getY(), 2)));
 
 					if (!debug) {
 						// Remove one HP
 						player.hit();
-						
+
 						if (player.getHealth() <= 0) {
 							new Sound("sounds/dead.wav").start();
 							JOptionPane.showMessageDialog(null, "Try Again!");
+							level = "menu";
 							initialiseGame();
 						} else {
 							new Sound("sounds/hit.wav").start();

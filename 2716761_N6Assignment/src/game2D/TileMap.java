@@ -252,7 +252,7 @@ public class TileMap {
 	 *         tile map
 	 */
 	public int getTileYC(int x, int y) {
-		if (!valid(x, y)){
+		if (!valid(x, y)) {
 			return 0;
 		}
 		return tmap[x][y].getYC();
@@ -277,7 +277,7 @@ public class TileMap {
 	 * @return true if the character was correctly set
 	 */
 	public boolean setTileChar(char ch, int x, int y) {
-		if (!valid(x, y)){
+		if (!valid(x, y)) {
 			return false;
 		}
 		tmap[x][y].setCharacter(ch);
@@ -292,10 +292,15 @@ public class TileMap {
 	 * @return The character the tile is currently set to.
 	 */
 	public char getTileChar(int x, int y) {
-		if (!valid(x, y)) {
-			return '?';
+		try {
+			if (!valid(x, y)) {
+				return '?';
+			}
+			return tmap[x][y].getCharacter();
+		} catch (Exception e) {
+			System.out.println("X: " + x + " Y: " + y);
 		}
-		return tmap[x][y].getCharacter();
+		return '?';
 	}
 
 	/**
@@ -320,7 +325,7 @@ public class TileMap {
 	 * @param yoff The yoffset to shift the tile map by
 	 */
 	public void draw(Graphics2D g, int xoff, int yoff) {
-		if (g == null){
+		if (g == null) {
 			return;
 		}
 
@@ -331,17 +336,17 @@ public class TileMap {
 		for (int r = 0; r < mapHeight; r++) {
 			for (int c = 0; c < mapWidth; c++) {
 				img = getTileImage(c, r);
-				if (img == null){
+				if (img == null) {
 					continue;
 				}
 				xc = xoff + c * tileWidth;
 				yc = yoff + r * tileHeight;
 
 				// Only draw the tile if it is on screen, otherwise go back round the loop
-				if (xc + tileWidth < 0 || xc >= rect.x + rect.width){
+				if (xc + tileWidth < 0 || xc >= rect.x + rect.width) {
 					continue;
 				}
-				if (yc + tileHeight < 0 || yc >= rect.y + rect.height){
+				if (yc + tileHeight < 0 || yc >= rect.y + rect.height) {
 					continue;
 				}
 				g.drawImage(img, xc, yc, null);

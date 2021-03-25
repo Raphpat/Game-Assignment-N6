@@ -114,6 +114,13 @@ public class Player extends Sprite {
 	public int getHealth() {
 		return health;
 	}
+	
+	/**
+	 * @return the maximum HP the player can have
+	 */
+	public int getMaxHealth() {
+		return MAX_HEALTH;
+	}
 
 	public void update(long elapsedTime) {
 		super.update(elapsedTime);
