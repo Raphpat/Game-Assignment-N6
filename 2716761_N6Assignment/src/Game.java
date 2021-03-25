@@ -94,6 +94,7 @@ public class Game extends GameCore {
 
 		end = new Animation();
 		end.loadAnimationFromSheet("images/end (Pressed) (64x64).png", 8, 1, 100);
+		end.pauseAt(0);
 		cup = new Sprite(end);
 
 		initialiseGame();
@@ -124,6 +125,12 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+			
+			cup.setX(1888);
+			cup.setY(640);
+			cup.setVelocityX(0);
+			cup.setVelocityY(0);
+			cup.show();
 
 			heart[0].setX(584);
 			heart[0].setY(544);
@@ -203,12 +210,6 @@ public class Game extends GameCore {
 			enemy[12].hide();
 			enemy[13].hide();
 
-			cup.setX(1000);
-			cup.setY(200);
-			cup.setVelocityX(0);
-			cup.setVelocityY(0);
-			cup.hide();
-
 			projectiles.clear();
 		} else if (level.equals("level 2")) {
 			tmap.loadMap("maps", "level2.txt");
@@ -218,6 +219,12 @@ public class Game extends GameCore {
 			player.setVelocityX(0);
 			player.setVelocityY(0);
 			player.show();
+			
+			cup.setX(160);
+			cup.setY(96);
+			cup.setVelocityX(0);
+			cup.setVelocityY(0);
+			cup.show();
 
 			heart[0].setX(2216);
 			heart[0].setY(390);
@@ -410,6 +417,10 @@ public class Game extends GameCore {
 			// Apply offsets to player and draw
 			player.setOffsets(xo, yo);
 			player.draw(g);
+			
+			// Draw the victory cup
+			cup.setOffsets(xo, yo);
+			cup.draw(g);
 
 			// Draw the enemies
 			for (Mage s : enemy) {
@@ -422,10 +433,6 @@ public class Game extends GameCore {
 				s.setOffsets(xo, yo);
 				s.draw(g);
 			}
-
-			// Draw the victory cup
-			cup.setOffsets(xo, yo);
-			cup.draw(g);
 
 			if (!projectiles.isEmpty()) {
 				for (int i = 0; i < projectiles.size(); i++) {
@@ -518,9 +525,15 @@ public class Game extends GameCore {
 			} else {
 				player.playAnimation();
 			}
-			
+
+			// Before moving the player, check the next tile collision. If there is going to
+			// be one, revert to previous coordinates
+			if (!debug && checkFutureTileCollision(player, tmap)) {
+				player.setPosition(player.getPreviousX(), player.getPreviousY());
+				player.stop();
+			}
 			player.update(elapsed);
-				
+
 			for (Sprite s : enemy) {
 				s.update(elapsed);
 			}
@@ -548,6 +561,7 @@ public class Game extends GameCore {
 				}
 			}
 
+			// Handle player collisions with hearts
 			for (Sprite s : heart) {
 				if (s.isVisible() && boundingBoxCollision(player, s)) {
 					if (player.getHealth() < player.getMaxHealth()) {
@@ -555,6 +569,12 @@ public class Game extends GameCore {
 						player.heal();
 					}
 				}
+			}
+			
+			// Handle player collision with cup
+			if(boundingCircleCollision(player, cup)) {
+				gameEnd = true;
+				cup.playAnimation();
 			}
 
 			// Tilemap collisions for enemy projectiles
@@ -640,22 +660,22 @@ public class Game extends GameCore {
 				}
 			}
 
-			// Check all the player and enemies tile collisions
-			if (checkFutureTileCollision(player, tmap)) {
-				// Move the sprite out of the block
-				if (player.getVelocityX() > 0) {
-					player.shiftX(-2);
-				} else if (player.getVelocityX() < 0) {
-					player.shiftX(2);
-				}
-				if (player.getVelocityY() > 0) {
-					player.shiftY(-2);
-				} else if (player.getVelocityY() < 0) {
-					player.shiftY(2);
-				}
-				// TODO fix the glitching through walls
-				player.stop();
-			}
+//			// Check all the player and enemies tile collisions
+//			if (checkFutureTileCollision(player, tmap)) {
+//				// Move the sprite out of the block
+//				if (player.getVelocityX() > 0) {
+//					player.shiftX(-2);
+//				} else if (player.getVelocityX() < 0) {
+//					player.shiftX(2);
+//				}
+//				if (player.getVelocityY() > 0) {
+//					player.shiftY(-2);
+//				} else if (player.getVelocityY() < 0) {
+//					player.shiftY(2);
+//				}
+//				// TODO fix the glitching through walls
+//				player.stop();
+//			}
 
 			for (Mage s : enemy) {
 				if (checkTileCollision(s, tmap)) {
@@ -788,13 +808,13 @@ public class Game extends GameCore {
 
 		if (ch != '.') // If it's not a dot (empty space), handle it
 		{
-			// Check for the cup
-			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
-				tmap.setTileChar('.', xtile, ytile);
-				cup.setPosition(sx, sy);
-				cup.show();
-				gameEnd = true;
-			}
+//			// Check for the cup
+//			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
+//				tmap.setTileChar('.', xtile, ytile);
+//				cup.setPosition(sx, sy);
+//				cup.show();
+//				gameEnd = true;
+//			}
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -810,13 +830,13 @@ public class Game extends GameCore {
 
 		// If it's not empty space
 		if (ch != '.') {
-			// Check for the cup
-			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
-				tmap.setTileChar('.', xtile, ytile);
-				cup.setPosition(sx, sy);
-				cup.show();
-				gameEnd = true;
-			}
+//			// Check for the cup
+//			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
+//				tmap.setTileChar('.', xtile, ytile);
+//				cup.setPosition(sx, sy);
+//				cup.show();
+//				gameEnd = true;
+//			}
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -832,12 +852,12 @@ public class Game extends GameCore {
 		// If it's not empty space
 		if (ch != '.') {
 			// Check for the cup
-			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
-				tmap.setTileChar('.', xtile, ytile);
-				cup.setPosition(sx, sy);
-				cup.show();
-				gameEnd = true;
-			}
+//			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
+//				tmap.setTileChar('.', xtile, ytile);
+//				cup.setPosition(sx, sy);
+//				cup.show();
+//				gameEnd = true;
+//			}
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -852,13 +872,13 @@ public class Game extends GameCore {
 
 		// If it's not empty space
 		if (ch != '.') {
-			// Check for the cup
-			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
-				tmap.setTileChar('.', xtile, ytile);
-				cup.setPosition(sx, sy);
-				cup.show();
-				gameEnd = true;
-			}
+//			// Check for the cup
+//			if (ch == 'e' && s.getClass().equals(new Player().getClass())) {
+//				tmap.setTileChar('.', xtile, ytile);
+//				cup.setPosition(sx, sy);
+//				cup.show();
+//				gameEnd = true;
+//			}
 
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
@@ -879,8 +899,8 @@ public class Game extends GameCore {
 	 */
 	public boolean checkFutureTileCollision(Sprite s, TileMap tmap) {
 		// Take a note of a sprite's current position
-		float sx = s.getNewX();
-		float sy = s.getNewY();
+		float sx = s.getX() + s.getVelocityX();
+		float sy = s.getY() + s.getVelocityY();
 
 		// Find out how wide and how tall a tile is
 		float tileWidth = tmap.getTileWidth();

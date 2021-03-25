@@ -9,6 +9,9 @@ import game2D.Sprite;
  *
  */
 public class Player extends Sprite {
+	
+	private float previousX;
+	private float previousY;
 
 	private static String playerImage = "images/characterSheet.png";
 	private static int MAX_SHOTS = 5;
@@ -27,6 +30,20 @@ public class Player extends Sprite {
 
 		anim.loadAnimationFromSheet(playerImage, 4, 1, 100);
 		setAnimation(anim);
+	}
+
+	/**
+	 * @return the previousX
+	 */
+	public float getPreviousX() {
+		return previousX;
+	}
+
+	/**
+	 * @return the previousY
+	 */
+	public float getPreviousY() {
+		return previousY;
 	}
 
 	/**
@@ -123,6 +140,8 @@ public class Player extends Sprite {
 	}
 
 	public void update(long elapsedTime) {
+		previousX = getX();
+		previousY = getY();
 		super.update(elapsedTime);
 		if (reloading) {
 			reloadTime += elapsedTime;
