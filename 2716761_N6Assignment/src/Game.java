@@ -119,7 +119,7 @@ public class Game extends GameCore {
 
 			setVisible(true);
 
-			player.setX(64);
+			player.setX(96);
 			player.setY(192);
 			player.setVelocityX(0);
 			player.setVelocityY(0);
@@ -460,7 +460,7 @@ public class Game extends GameCore {
 
 				cup.drawBoundingBox(g);
 				cup.drawBoundingCircle(g);
-				
+
 				for (Projectile proj : projectiles) {
 					proj.drawBoundingBox(g);
 					proj.drawBoundingCircle(g);
@@ -472,7 +472,7 @@ public class Game extends GameCore {
 
 			if (player.isReloading()) {
 				// Show reloading info
-				String msg = String.format("Relaoding: %d", player.getReload() - player.getReloadTime());
+				String msg = String.format("Reloading: %d", player.getReload() - player.getReloadTime());
 				g.setColor(Color.white);
 				g.drawString(msg, 20, 70);
 			} else {
@@ -518,12 +518,13 @@ public class Game extends GameCore {
 			} else {
 				player.playAnimation();
 			}
+			
 			player.update(elapsed);
-
+				
 			for (Sprite s : enemy) {
 				s.update(elapsed);
 			}
-			
+
 			for (Sprite s : heart) {
 				s.update(elapsed);
 			}
@@ -546,10 +547,10 @@ public class Game extends GameCore {
 					}
 				}
 			}
-			
+
 			for (Sprite s : heart) {
-				if(s.isVisible() && boundingBoxCollision(player, s)) {
-					if(player.getHealth() < player.getMaxHealth()) {
+				if (s.isVisible() && boundingBoxCollision(player, s)) {
+					if (player.getHealth() < player.getMaxHealth()) {
 						s.hide();
 						player.heal();
 					}
@@ -640,7 +641,7 @@ public class Game extends GameCore {
 			}
 
 			// Check all the player and enemies tile collisions
-			if (checkTileCollision(player, tmap)) {
+			if (checkFutureTileCollision(player, tmap)) {
 				// Move the sprite out of the block
 				if (player.getVelocityX() > 0) {
 					player.shiftX(-2);
@@ -669,7 +670,6 @@ public class Game extends GameCore {
 					} else if (s.getVelocityY() < 0) {
 						s.shiftY(1);
 					}
-					// TODO fix the glitching through walls
 					// turn the sprite around
 					s.setVelocity(-s.getVelocityX(), -s.getVelocityY());
 				}
@@ -863,6 +863,71 @@ public class Game extends GameCore {
 			if (s.getClass().equals(new Projectile().getClass())) {
 				checkProjDestruction(ch, xtile, ytile);
 			}
+			return true;
+		}
+
+		return false;
+	}
+
+	//
+	/**
+	 * Figure out where the next move is and then authorise
+	 * 
+	 * @param s    The Sprite to check collisions for
+	 * @param tmap The tile map to check
+	 * @return true if there was a tile collision
+	 */
+	public boolean checkFutureTileCollision(Sprite s, TileMap tmap) {
+		// Take a note of a sprite's current position
+		float sx = s.getNewX();
+		float sy = s.getNewY();
+
+		// Find out how wide and how tall a tile is
+		float tileWidth = tmap.getTileWidth();
+		float tileHeight = tmap.getTileHeight();
+
+		// Divide the sprite x coordinate by the width of a tile, to get
+		// the number of tiles across the x axis that the sprite is positioned at
+		int xtile = (int) (sx / tileWidth);
+		// The same applies to the y coordinate
+		int ytile = (int) (sy / tileHeight);
+
+		// What tile character is at the top left of the sprite s?
+		char ch = tmap.getTileChar(xtile, ytile);
+
+		if (ch != '.') // If it's not a dot (empty space), handle it
+		{
+			return true;
+		}
+
+		// We need to consider the other corners of the sprite
+		// The above looked at the top left position, let's look at the bottom left.
+		xtile = (int) (sx / tileWidth);
+		ytile = (int) ((sy + (s.getHeight() * s.getScale())) / tileHeight);
+		ch = tmap.getTileChar(xtile, ytile);
+
+		// If it's not empty space
+		if (ch != '.') {
+			return true;
+		}
+
+		// Top right
+		xtile = (int) ((sx + (s.getHeight() * s.getScale())) / tileWidth);
+		ytile = (int) (sy / tileHeight);
+		ch = tmap.getTileChar(xtile, ytile);
+
+		// If it's not empty space
+		if (ch != '.') {
+			return true;
+		}
+
+		// Bottom right
+		xtile = (int) ((sx + (s.getHeight() * s.getScale())) / tileWidth);
+		ytile = (int) ((sy + (s.getHeight() * s.getScale())) / tileHeight);
+		ch = tmap.getTileChar(xtile, ytile);
+
+		// If it's not empty space
+		if (ch != '.') {
 			return true;
 		}
 
